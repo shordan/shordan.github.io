@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jordan Delgado | AI & Robotics Engineer</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="logo">JD<span class="neon-dot">.</span></div>
+        <ul class="nav-links">
+            <li><a href="#hero">Inicio</a></li>
+            <li><a href="#about">Sobre Mí</a></li>
+            <li><a href="#projects">Proyectos</a></li>
+            <li><a href="#contact">Contacto</a></li>
+        </ul>
+    </nav>
+
+    <section id="hero">
+        <div id="canvas-container"></div> <div class="hero-content">
+            <h1 class="glitch" data-text="Jordan Delgado">Jordan Delgado</h1>
+            <h2>Ingeniero en Robótica & IA</h2>
+            <p>Diseñando la inteligencia del mañana.</p>
+            <a href="#projects" class="btn-neon">Ver Proyectos</a>
+        </div>
+    </section>
+
+    <section id="projects">
+        <h2 class="section-title">Proyectos Destacados</h2>
+        <div class="projects-grid">
+            <div class="project-card" onclick="openModal('modal1')">
+                <div class="card-image" style="background-image: url('https://via.placeholder.com/400x300/000000/00f3ff?text=Simulacion+Robotica');"></div>
+                <div class="card-info">
+                    <h3>Brazo Robótico 6-DOF</h3>
+                    <p>Control PID y visión artificial.</p>
+                    <span class="tag">Python</span> <span class="tag">ROS</span>
+                </div>
+            </div>
+            
+            <div class="project-card" onclick="openModal('modal2')">
+                <div class="card-image" style="background-image: url('https://via.placeholder.com/400x300/000000/bd00ff?text=Red+Neuronal');"></div>
+                <div class="card-info">
+                    <h3>Detección de Anomalías</h3>
+                    <p>Deep Learning aplicado a sensores industriales.</p>
+                    <span class="tag">TensorFlow</span> <span class="tag">C++</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div id="modal1" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('modal1')">&times;</span>
+            <h2>Brazo Robótico 6-DOF</h2>
+            
+            <div class="project-detail-grid">
+                <div class="detail-left">
+                    <h3>Simulación & Código</h3>
+                    <img src="https://via.placeholder.com/600x300/111/00f3ff?text=GIF+Simulacion" alt="Demo" class="detail-img">
+                    <div class="code-block">
+                        <pre><code>def calculate_kinematics(joints):
+    # Forward Kinematics logic
+    x = l1 * cos(q1) + l2 * cos(q1 + q2)
+    return x, y, z</code></pre>
+                    </div>
+                </div>
+                <div class="detail-right">
+                    <h3>Informe Técnico (PDF)</h3>
+                    <iframe src="" class="pdf-viewer" title="Informe PDF"></iframe>
+                    <p style="margin-top:10px; font-size:0.8rem; color:#888;">*PDF visible al integrar archivo real*</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
