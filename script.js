@@ -2,9 +2,11 @@
 const init3D = () => {
     const container = document.getElementById('canvas-container');
 
-    // Variables para la interactividad del mouse
+    // Variables para interacción
     const mouse = new THREE.Vector2();
-    let mouseX = 0, mouseY = 0; // Usaremos estas para la posición en la escena
+    const target = new THREE.Vector3(); // Donde está el mouse en el mundo 3D
+    const windowHalfX = window.innerWidth / 2;
+    const windowHalfY = window.innerHeight / 2;
 
     // Escena
     const scene = new THREE.Scene();
@@ -14,14 +16,15 @@ const init3D = () => {
     camera.position.z = 5;
 
     // Renderizador
-    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true }); // alpha true para fondo transparente
+    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(window.devicePixelRatio); // Para pantallas retina/alta definición
     container.appendChild(renderer.domElement);
 
-    // Objeto: IcoSphere (Representando un nodo de IA)
-    const geometry = new THREE.IcosahedronGeometry(2, 1); // Radio 2, Detalle 1
-    const material = new THREE.MeshBasicMaterial({
-        color: 0x00f3ff,
+    // Objeto Central: IcoSphere
+    const geometry = new THREE.IcosahedronGeometry(2, 1);
+    const material = new THREE.MeshBasicMaterial({ 
+        color: 0x00f3ff, 
         wireframe: true,
         transparent: true,
         opacity: 0.3
@@ -29,97 +32,101 @@ const init3D = () => {
     const sphere = new THREE.Mesh(geometry, material);
     scene.add(sphere);
 
-    // Partículas orbitales (Efecto Átomo/Robótica)
+    // --- Sistema de Partículas ---
+    const particlesCount = 800;
     const particlesGeometry = new THREE.BufferGeometry();
-    const particlesCount = 700;
     const posArray = new Float32Array(particlesCount * 3);
-
-    // Almacenamos las posiciones iniciales para que puedan volver a su lugar
-    const initialPosArray = new Float32Array(particlesCount * 3);
+    const initialPosArray = new Float32Array(particlesCount * 3); // Guardamos posición original
 
     for(let i = 0; i < particlesCount * 3; i++) {
-        posArray[i] = (Math.random() - 0.5) * 15; // Dispersión
-        initialPosArray[i] = posArray[i]; // Guardamos la posición inicial
+        // Dispersión más amplia
+        posArray[i] = (Math.random() - 0.5) * 20; 
+        initialPosArray[i] = posArray[i];
     }
+
     particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+    
     const particlesMaterial = new THREE.PointsMaterial({
-        size: 0.02,
-        color: 0xbc13fe
+        size: 0.03, // Un poco más grandes para verlas mejor
+        color: 0xbc13fe,
+        transparent: true,
+        opacity: 0.8
     });
+    
     const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
     scene.add(particlesMesh);
 
-    // --- Event Listener para el movimiento del mouse ---
-    window.addEventListener('mousemove', (event) => {
-        // Normalizar las coordenadas del mouse a un rango de -1 a 1
+    // --- Event Listener Mouse ---
+    document.addEventListener('mousemove', (event) => {
+        // Coordenadas normalizadas (-1 a 1)
         mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
         mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-
-        // Convertir coordenadas del mouse a coordenadas 3D para la escena
-        // Esto es una aproximación, ajusta Z según la profundidad que quieras
-        mouseX = mouse.x * 2; // Multiplicador para ajustar la sensibilidad
-        mouseY = mouse.y * 2;
     });
 
+    // --- Animación ---
+    const clock = new THREE.Clock();
 
-    // Animación
     const animate = () => {
         requestAnimationFrame(animate);
+        const elapsedTime = clock.getElapsedTime();
 
-        // Rotación lenta de la esfera
-        sphere.rotation.x += 0.001;
+        // 1. Rotación constante de la esfera central
         sphere.rotation.y += 0.002;
+        sphere.rotation.x += 0.001;
 
-        // Rotación de las partículas (para el movimiento inicial)
-        particlesMesh.rotation.y -= 0.0005;
-
-        // --- Lógica del efecto campo magnético ---
+        // 2. Calcular posición del mouse en el espacio 3D (Proyección)
+        // Proyectamos el mouse sobre el plano Z=0 donde están la mayoría de partículas
+        let vector = new THREE.Vector3(mouse.x, mouse.y, 0.5);
+        vector.unproject(camera);
+        let dir = vector.sub(camera.position).normalize();
+        let distance = -camera.position.z / dir.z;
+        let finalPos = camera.position.clone().add(dir.multiplyScalar(distance));
+        
+        // 3. Lógica de Partículas
         const positions = particlesGeometry.attributes.position.array;
-        const initialPositions = initialPosArray; // Usamos las posiciones iniciales
 
         for (let i = 0; i < particlesCount; i++) {
             const i3 = i * 3;
+            
+            // Posición actual de la partícula
+            let px = positions[i3];
+            let py = positions[i3 + 1];
+            let pz = positions[i3 + 2];
 
-            // Posición actual de la partícula (en la escena)
-            // Consideramos la rotación global para el cálculo de distancia si queremos más precisión
-            const particleX = positions[i3];
-            const particleY = positions[i3 + 1];
-            const particleZ = positions[i3 + 2];
+            // Posición original (destino)
+            let ox = initialPosArray[i3];
+            let oy = initialPosArray[i3 + 1];
+            let oz = initialPosArray[i3 + 2];
 
-            // Distancia al mouse (simple en 2D por ahora, ya que el mouse solo tiene X,Y)
-            const dx = particleX - mouseX;
-            const dy = particleY - mouseY;
-            const distance = Math.sqrt(dx * dx + dy * dy);
+            // Calcular distancia entre la partícula y el mouse (finalPos)
+            let dx = px - finalPos.x;
+            let dy = py - finalPos.y;
+            // Ignoramos Z para que el efecto sea como un cilindro infinito desde la vista
+            let dist = Math.sqrt(dx * dx + dy * dy); 
 
-            // Ajusta este valor para cambiar la fuerza de la interacción
-            const repulsionRadius = 1.0; 
-            const repulsionStrength = 0.05; // Cuánto se mueven
+            // Parámetros del efecto
+            const repulsionRadius = 3.0; // Radio de efecto
+            const force = 2.0; // Fuerza de empuje
 
-            if (distance < repulsionRadius) {
-                // Calcular la dirección de repulsión
-                const angle = Math.atan2(dy, dx);
-                const repelX = Math.cos(angle);
-                const repelY = Math.sin(angle);
-
-                // Mover la partícula away del mouse, con un decaimiento basado en la distancia
-                // También interpolamos para que vuelva a su posición original lentamente
-                const force = (repulsionRadius - distance) * repulsionStrength;
+            if (dist < repulsionRadius) {
+                // Calcular ángulo y fuerza
+                let angle = Math.atan2(dy, dx);
+                let pushX = Math.cos(angle) * force;
+                let pushY = Math.sin(angle) * force;
                 
-                // Mover la partícula
-                positions[i3] += repelX * force;
-                positions[i3 + 1] += repelY * force;
+                // Empujar la partícula lejos del mouse (mezclamos con su posición actual)
+                // Usamos Lerp para suavizar el empuje
+                positions[i3] += (pushX - (positions[i3] - ox)) * 0.05;
+                positions[i3 + 1] += (pushY - (positions[i3 + 1] - oy)) * 0.05;
+            } else {
+                // Si el mouse no está cerca, volver suavemente a posición original
+                positions[i3] += (ox - px) * 0.02;
+                positions[i3 + 1] += (oy - py) * 0.02;
+                positions[i3 + 2] += (oz - pz) * 0.02;
             }
-
-            // Interpolación para que las partículas vuelvan a su posición original
-            // Lerp (Linear Interpolation) para un movimiento suave
-            positions[i3] += (initialPositions[i3] - positions[i3]) * 0.01;
-            positions[i3 + 1] += (initialPositions[i3 + 1] - positions[i3 + 1]) * 0.01;
-            positions[i3 + 2] += (initialPositions[i3 + 2] - positions[i3 + 2]) * 0.01;
-
         }
 
-        particlesGeometry.attributes.position.needsUpdate = true; // Notificar a Three.js que las posiciones cambiaron
-
+        particlesGeometry.attributes.position.needsUpdate = true;
         renderer.render(scene, camera);
     };
 
@@ -133,21 +140,18 @@ const init3D = () => {
     });
 };
 
-// Iniciar 3D
+// Iniciar
 init3D();
 
-// --- Lógica de Modales ---
+// --- Lógica de Modales (Igual que antes) ---
 function openModal(modalId) {
     document.getElementById(modalId).style.display = "block";
-    document.body.style.overflow = "hidden"; // Evitar scroll de fondo
+    document.body.style.overflow = "hidden";
 }
-
 function closeModal(modalId) {
     document.getElementById(modalId).style.display = "none";
-    document.body.style.overflow = "auto"; // Permitir scroll de nuevo
+    document.body.style.overflow = "auto";
 }
-
-// Cerrar modal si se hace clic fuera del contenido
 window.onclick = function(event) {
     if (event.target.classList.contains('modal')) {
         event.target.style.display = "none";
