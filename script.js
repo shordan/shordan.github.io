@@ -70,11 +70,11 @@ const init3D = () => {
     const formulas = [
         "J(q)",           // Jacobiano
         "x = f(q)",       // Cinemática Directa
-        "q = f^-1(x)",    // Cinemática Inversa
-        "T = Rp",         // Transformación
+        "dq = J^-1 * dx",    // Cinemática Inversa
+        "T = [ R  p ]",         // Transformación
         "PID",            // Control
         "dx/dt",          // Derivada
-        "Tau = M(q)a"       // Dinámica (Usamos Tau en vez del simbolo griego para evitar errores de fuente)
+        "Tau = M(q)q'' + C + G"       // Dinámica (Usamos Tau en vez del simbolo griego para evitar errores de fuente)
     ];
 
     const floatingFormulas = []; 
@@ -168,11 +168,11 @@ const init3D = () => {
                 const isHovered = intersects.find(hit => hit.object === item.mesh);
 
                 if (isHovered) {
-                    item.mesh.material.opacity = 0.8;        
+                    item.mesh.material.opacity = 0.6;        
                     item.mesh.material.color.set(0xffffff); 
                     item.mesh.scale.setScalar(1.0);         
                 } else {
-                    item.mesh.material.opacity = 0.3;       
+                    item.mesh.material.opacity = 0.2;       
                     item.mesh.material.color.set(0xffffff); 
                     item.mesh.scale.setScalar(1.0);
                 }
