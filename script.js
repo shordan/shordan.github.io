@@ -40,7 +40,7 @@ const init3D = () => {
 
     // --- 2. Partículas de Fondo (LÓGICA CLÁSICA RESTAURADA) ---
     const particlesGeometry = new THREE.BufferGeometry();
-    const particlesCount = 1500; // Cantidad media para buen rendimiento y densidad
+    const particlesCount = 2000; // Cantidad media para buen rendimiento y densidad
     
     const posArray = new Float32Array(particlesCount * 3);
 
@@ -56,7 +56,7 @@ const init3D = () => {
         size: 0.04, // Tamaño visible
         color: 0xffffff, // Blanco
         transparent: true,
-        opacity: 0.6 // Buena visibilidad
+        opacity: 0.8 // Buena visibilidad
     });
     
     const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
