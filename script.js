@@ -66,7 +66,7 @@ const init3D = () => {
 
     // --- 3. NUEVO: Paneles de Datos Flotantes (Efecto Robótica) ---
     const dataPanels = [];
-    const panelCount = 5; // 5 Paneles flotando
+    const panelCount = 20; // 5 Paneles flotando
     const panelMaterial = new THREE.MeshBasicMaterial({
         color: 0x00ffff, // Cian Tecnológico
         transparent: true,
