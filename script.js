@@ -1,4 +1,4 @@
-// --- Lógica 3D con Three.js (Fusión Final: Esfera + Partículas Clásicas + Paneles Robótica) ---
+// --- Lógica 3D con Three.js (Fusión Final: Paneles Independientes) ---
 const init3D = () => {
     console.log("Inicializando 3D Final...");
 
@@ -27,7 +27,7 @@ const init3D = () => {
     renderer.setPixelRatio(window.devicePixelRatio);
     container.appendChild(renderer.domElement);
 
-    // --- 1. Objeto Central: Esfera Blanca Fantasma (TU FAVORITA) ---
+    // --- 1. Objeto Central: Esfera Blanca Fantasma ---
     const geometry = new THREE.IcosahedronGeometry(2.2, 4);
     const originalPositions = geometry.attributes.position.array.slice(); 
     
@@ -41,14 +41,13 @@ const init3D = () => {
     const sphere = new THREE.Mesh(geometry, material);
     scene.add(sphere);
 
-    // --- 2. Partículas de Fondo (LÓGICA CLÁSICA RESTAURADA) ---
+    // --- 2. Partículas de Fondo ---
     const particlesGeometry = new THREE.BufferGeometry();
     const particlesCount = 2000; 
     
     const posArray = new Float32Array(particlesCount * 3);
 
     for(let i = 0; i < particlesCount * 3; i++) {
-        // Dispersión corta (15) para mantenerlas concentradas
         posArray[i] = (Math.random() - 0.5) * 15; 
     }
 
@@ -66,45 +65,45 @@ const init3D = () => {
 
     // --- 3. NUEVO: Paneles de Datos Flotantes (Efecto Robótica) ---
     const dataPanels = [];
-    const panelCount = 20; // 5 Paneles flotando
-    const panelMaterial = new THREE.MeshBasicMaterial({
+    const panelCount = 20; 
+    
+    // Definimos el material base
+    const basePanelMaterial = new THREE.MeshBasicMaterial({
         color: 0x00ffff, // Cian Tecnológico
         transparent: true,
-        opacity: 0.6,   // Muy sutiles por defecto
+        opacity: 0.6,   
         side: THREE.DoubleSide,
         wireframe: true 
     });
 
     for (let i = 0; i < panelCount; i++) {
-        // Alternamos entre Rectángulos y Triángulos
         let panelShape;
         if (i % 2 === 0) {
-            panelShape = new THREE.PlaneGeometry(2, 1.2); // Rectángulo tipo pantalla
+            panelShape = new THREE.PlaneGeometry(2, 1.2); 
         } else {
-            panelShape = new THREE.CircleGeometry(1, 3); // Triángulo
+            panelShape = new THREE.CircleGeometry(1, 3); 
         }
         
-        const panelMesh = new THREE.Mesh(panelShape, panelMaterial);
+        // *** AQUÍ ESTÁ LA SOLUCIÓN ***
+        // Usamos .clone() para que cada panel tenga su PROPIO material independiente
+        const panelMesh = new THREE.Mesh(panelShape, basePanelMaterial.clone());
 
-        // Posicionamiento aleatorio alrededor de la esfera (entre radio 3 y 5)
-        const theta = Math.random() * Math.PI * 2; // Ángulo aleatorio
-        const radius = 3.5 + Math.random() * 1.5; // Distancia del centro
+        // Posicionamiento aleatorio
+        const theta = Math.random() * Math.PI * 2; 
+        const radius = 3.5 + Math.random() * 1.5; 
         
         panelMesh.position.x = Math.cos(theta) * radius;
-        panelMesh.position.y = (Math.random() - 0.5) * 4; // Altura variable
-        panelMesh.position.z = Math.sin(theta) * radius * 0.5; // Profundidad
+        panelMesh.position.y = (Math.random() - 0.5) * 4; 
+        panelMesh.position.z = Math.sin(theta) * radius * 0.5; 
 
-        // Rotación aleatoria inicial
         panelMesh.rotation.set(Math.random(), Math.random(), Math.random());
 
         scene.add(panelMesh);
-        // Guardamos referencia y posición inicial para animar
         dataPanels.push({ mesh: panelMesh, initialY: panelMesh.position.y, speed: 0.002 + Math.random() * 0.002 });
     }
 
     // --- Event Listener Mouse ---
     document.addEventListener('mousemove', (event) => {
-        // Actualizamos mouse para esfera y para raycaster
         mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
         mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
     });
@@ -120,12 +119,11 @@ const init3D = () => {
         sphere.rotation.y += 0.001;
         sphere.rotation.z += 0.0005;
 
-        // B. Movimiento Partículas (Rotación en bloque clásica)
+        // B. Movimiento Partículas
         particlesMesh.rotation.y = -time * 0.05; 
         particlesMesh.rotation.x = time * 0.01; 
 
-        // C. Movimiento e Interacción de Paneles (NUEVO)
-        // Actualizamos el raycaster con la posición del mouse
+        // C. Movimiento e Interacción de Paneles
         raycaster.setFromCamera(mouse, camera);
         const intersects = raycaster.intersectObjects(dataPanels.map(p => p.mesh));
 
@@ -136,19 +134,21 @@ const init3D = () => {
             panel.mesh.position.y = panel.initialY + Math.sin(time + panel.initialY) * 0.3;
 
             // 2. Interacción (Hover)
-            // Si el mouse intersecta este panel...
-            if (intersects.some(hit => hit.object === panel.mesh)) {
-                panel.mesh.material.opacity = 1; // Se ilumina
-                panel.mesh.material.color.set(0x00ffff); // Cian puro
-                panel.mesh.scale.setScalar(1.1); // Crece un poquito
+            // Verificamos si ESTE panel específico está siendo tocado
+            const isHovered = intersects.find(hit => hit.object === panel.mesh);
+
+            if (isHovered) {
+                panel.mesh.material.opacity = 1; // Se ilumina al máximo
+                panel.mesh.material.color.set(0xffffff); // Se pone blanco brillante
+                panel.mesh.scale.setScalar(1.1); 
             } else {
-                panel.mesh.material.opacity = 0.6; // Vuelve a ser fantasma
-                panel.mesh.material.color.set(0x00ffff); 
-                panel.mesh.scale.setScalar(1.0); // Tamaño normal
+                panel.mesh.material.opacity = 0.3; // Vuelve a ser tenue
+                panel.mesh.material.color.set(0x00ffff); // Vuelve a Cian
+                panel.mesh.scale.setScalar(1.0); 
             }
         });
 
-        // D. Interacción Mouse Esfera (Deformación)
+        // D. Interacción Mouse Esfera
         const distToCenter = Math.sqrt(mouse.x * mouse.x + mouse.y * mouse.y);
         const maxDist = 0.5;
         if (distToCenter < maxDist) {
