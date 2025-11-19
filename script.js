@@ -218,19 +218,98 @@ const init3D = () => {
 
 init3D();
 
-// --- Modales (Sin cambios) ---
-// Asegúrate de exportar o hacer globales estas funciones si el módulo las encierra
+// ==========================================
+// 2. LÓGICA DEL SLIDER MULTIMEDIA (CARRUSEL)
+// ==========================================
+
+function initializeSliders() {
+    const sliders = document.querySelectorAll('.media-slider-container');
+    
+    sliders.forEach(container => {
+        const slider = container.querySelector('.media-slider');
+        const slides = Array.from(slider.children);
+        const prevBtn = container.querySelector('.prev-btn');
+        const nextBtn = container.querySelector('.next-btn');
+        const dotsContainer = container.querySelector('.slider-dots');
+        let currentIndex = 0;
+
+        // Crear puntos de navegación (dots)
+        slides.forEach((_, i) => {
+            const dot = document.createElement('div');
+            dot.classList.add('dot');
+            if (i === 0) dot.classList.add('active');
+            dot.addEventListener('click', () => goToSlide(i));
+            dotsContainer.appendChild(dot);
+        });
+        const dots = Array.from(dotsContainer.children);
+
+        function goToSlide(index) {
+            // Pausar videos al cambiar de slide
+            slides[currentIndex].querySelectorAll('video').forEach(video => video.pause());
+
+            // Calcular nuevo índice circular
+            currentIndex = (index + slides.length) % slides.length;
+            
+            // Mover el slider
+            slider.style.transform = `translateX(-${currentIndex * 100}%)`;
+
+            // Actualizar estado de los puntos
+            dots.forEach((dot, i) => {
+                dot.classList.toggle('active', i === currentIndex);
+            });
+        }
+
+        // Event Listeners Botones
+        prevBtn.addEventListener('click', () => goToSlide(currentIndex - 1));
+        nextBtn.addEventListener('click', () => goToSlide(currentIndex + 1));
+
+        // Resetear slider cuando se abre el modal
+        container.closest('.modal').addEventListener('modal-opened', () => {
+            goToSlide(0);
+        });
+    });
+}
+
+// Ejecutar inicialización de sliders al cargar la página
+document.addEventListener('DOMContentLoaded', initializeSliders);
+
+// ==========================================
+// 3. LÓGICA DE MODALES (VENTANAS EMERGENTES)
+// ==========================================
+
+// Función para abrir modales (Global)
 window.openModal = function(modalId) {
-    document.getElementById(modalId).style.display = "block";
-    document.body.style.overflow = "hidden";
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        modal.style.display = "block";
+        document.body.style.overflow = "hidden"; // Bloquear scroll de fondo
+        
+        // Disparar evento para avisar al slider que el modal se abrió
+        // Pequeño timeout para asegurar que el display block ya se aplicó
+        setTimeout(() => {
+            const event = new CustomEvent('modal-opened');
+            modal.dispatchEvent(event);
+        }, 50);
+    }
 }
+
+// Función para cerrar modales (Global)
 window.closeModal = function(modalId) {
-    document.getElementById(modalId).style.display = "none";
-    document.body.style.overflow = "auto";
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        modal.style.display = "none";
+        document.body.style.overflow = "auto"; // Reactivar scroll
+        
+        // Pausar todos los videos dentro del modal al cerrarlo
+        modal.querySelectorAll('video').forEach(video => video.pause());
+    }
 }
+
+// Cerrar modal si se hace clic fuera del contenido (en el fondo oscuro)
 window.onclick = function(event) {
     if (event.target.classList.contains('modal')) {
         event.target.style.display = "none";
         document.body.style.overflow = "auto";
+        event.target.querySelectorAll('video').forEach(video => video.pause());
     }
 }
