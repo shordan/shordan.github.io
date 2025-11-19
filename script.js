@@ -49,9 +49,9 @@ const init3D = () => {
     for(let i = 0; i < particlesCount; i++) {
         const i3 = i * 3;
         // AUMENTADO EL RANGO: De 40 a 90 para llenar más pantalla
-        posArray[i3] = (Math.random() - 0.5) * 90; 
-        posArray[i3 + 1] = (Math.random() - 0.5) * 90; 
-        posArray[i3 + 2] = (Math.random() - 0.5) * 90; 
+        posArray[i3] = (Math.random() - 0.5) * 15; 
+        posArray[i3 + 1] = (Math.random() - 0.5) * 15; 
+        posArray[i3 + 2] = (Math.random() - 0.5) * 15; 
 
         initialParticlePositions[i3] = posArray[i3];
         initialParticlePositions[i3+1] = posArray[i3+1];
