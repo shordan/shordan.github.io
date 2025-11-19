@@ -32,7 +32,7 @@ const init3D = () => {
         color: 0xffffff, // BLANCO PURO
         wireframe: true,
         transparent: true,
-        opacity: 0.15 // MUY TRANSPARENTE (Casi invisible)
+        opacity: 0.35 // MUY TRANSPARENTE (Casi invisible)
     });
     
     const sphere = new THREE.Mesh(geometry, material);

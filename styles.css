@@ -37,19 +37,18 @@ body { background-color: var(--bg-dark); color: var(--text-main); overflow-x: hi
     opacity: 0.8; /* Un poco más sutil */
 }
 
-/* Contenedor del texto (Blur suave) */
+/* Contenedor del texto (Invisible, solo para centrar) */
 .hero-content { 
     text-align: center; 
     z-index: 1; 
-    pointer-events: none; 
+    pointer-events: none; /* Deja pasar los clics al 3D si no tocas el botón */
     
-    /* Estilo Glassmorphism muy suave */
-    background: rgba(0, 0, 0, 0.3); /* Negro muy transparente */
-    backdrop-filter: blur(8px); /* Blur detrás del texto */
-    padding: 40px 60px; 
-    border-radius: 30px; /* Bordes más redondeados */
-    border: 1px solid rgba(255, 255, 255, 0.05); /* Borde casi invisible */
-    box-shadow: 0 0 60px rgba(0, 0, 0, 0.5); /* Sombra difusa para separar del fondo */
+    /* Eliminamos fondo, bordes y sombras para quitar el cuadro */
+    background: transparent;
+    backdrop-filter: none;
+    border: none;
+    box-shadow: none;
+    padding: 0; 
 }
 
 h1 { 
