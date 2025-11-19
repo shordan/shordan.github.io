@@ -1,10 +1,9 @@
 :root {
-    --bg-dark: #050505;
-    --card-bg: rgba(255, 255, 255, 0.05);
-    --neon-blue: #00f3ff;
-    --neon-purple: #bc13fe;
+    --bg-dark: #000000; /* Negro puro */
+    --card-bg: rgba(255, 255, 255, 0.03);
+    --accent-white: #ffffff;
     --text-main: #ffffff;
-    --text-muted: #a0a0a0;
+    --text-muted: #cccccc;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
@@ -15,113 +14,106 @@ body { background-color: var(--bg-dark); color: var(--text-main); overflow-x: hi
 .navbar {
     display: flex; justify-content: space-between; padding: 20px 50px;
     position: fixed; width: 100%; z-index: 100;
-    background: rgba(1, 1, 1, 0.6); /* Más transparente */
-    backdrop-filter: blur(8px); /* Aumentamos el blur */
-    border-bottom: 1px solid rgba(0, 243, 255, 0.15); /* Borde un poco más visible */
+    background: rgba(0, 0, 0, 0.5); /* Más transparente */
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
-.logo { font-size: 1.5rem; font-weight: bold; letter-spacing: 2px; }
-.neon-dot { color: var(--neon-blue); text-shadow: 0 0 10px var(--neon-blue); }
+.logo { font-size: 1.5rem; font-weight: bold; letter-spacing: 2px; color: var(--accent-white); }
+.neon-dot { color: var(--accent-white); text-shadow: 0 0 10px rgba(255, 255, 255, 0.8); }
 .nav-links { list-style: none; display: flex; gap: 30px; }
-.nav-links a { color: var(--text-main); text-decoration: none; font-size: 0.9rem; transition: 0.3s; }
-.nav-links a:hover { color: var(--neon-blue); text-shadow: 0 0 12px var(--neon-blue); }
+.nav-links a { color: var(--text-muted); text-decoration: none; font-size: 0.9rem; transition: 0.3s; }
+.nav-links a:hover { color: var(--accent-white); text-shadow: 0 0 8px rgba(255, 255, 255, 0.5); }
 
 /* Hero Section */
 #hero {
     height: 100vh; display: flex; align-items: center; justify-content: center;
     position: relative; overflow: hidden;
 }
-#canvas-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
+
+/* EL EFECTO DREAMY (BLUR AL FONDO 3D) */
+#canvas-container { 
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; 
+    filter: blur(3px); /* AQUÍ ESTÁ EL TRUCO: Suaviza esfera y partículas */
+    opacity: 0.8; /* Un poco más sutil */
+}
+
+/* Contenedor del texto (Blur suave) */
 .hero-content { 
     text-align: center; 
     z-index: 1; 
     pointer-events: none; 
-    /* Contenedor invisible para el blur */
-    background: rgba(1, 1, 1, 0.2); /* Fondo sutil para el blur */
-    backdrop-filter: blur(4px); /* Blur de fondo */
-    padding: 20px 40px; /* Espacio alrededor del texto */
-    border-radius: 15px; /* Bordes suaves */
-    border: 1px solid rgba(0, 243, 255, 0.05); /* Borde sutil */
-    box-shadow: 0 0 20px rgba(0, 243, 255, 0.08); /* Sombra suave para "flotar" */
-}
-/* Títulos: Añadimos más resplandor */
-h1 { 
-    font-size: 4rem; 
-    margin-bottom: 10px; 
-    text-transform: uppercase; 
-    letter-spacing: 5px; 
-    text-shadow: 0 0 15px rgba(255, 255, 255, 0.6), 0 0 25px rgba(255, 255, 255, 0.4); /* Resplandor blanco */
-}
-h2 { 
-    color: var(--neon-purple); 
-    font-weight: 300; 
-    margin-bottom: 20px; 
-    text-shadow: 0 0 10px var(--neon-purple), 0 0 20px rgba(188, 19, 254, 0.4); /* Resplandor púrpura */
+    
+    /* Estilo Glassmorphism muy suave */
+    background: rgba(0, 0, 0, 0.3); /* Negro muy transparente */
+    backdrop-filter: blur(8px); /* Blur detrás del texto */
+    padding: 40px 60px; 
+    border-radius: 30px; /* Bordes más redondeados */
+    border: 1px solid rgba(255, 255, 255, 0.05); /* Borde casi invisible */
+    box-shadow: 0 0 60px rgba(0, 0, 0, 0.5); /* Sombra difusa para separar del fondo */
 }
 
-/* Botón Neón: Más resplandor */
+h1 { 
+    font-size: 4rem; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 8px; 
+    color: white;
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.5); /* Glow blanco suave */
+}
+
+h2 { 
+    color: var(--text-muted); /* Gris claro en vez de morado */
+    font-weight: 300; margin-bottom: 30px; letter-spacing: 2px;
+    text-transform: uppercase; font-size: 1rem;
+}
+
+/* Botón Minimalista */
 .btn-neon {
-    /* ... otras propiedades ... */
-    border: 1px solid var(--neon-blue); 
-    color: var(--neon-blue);
-    box-shadow: 0 0 10px rgba(0, 243, 255, 0.3); /* Sombra más pronunciada */
+    pointer-events: auto;
+    display: inline-block; padding: 12px 40px;
+    border: 1px solid rgba(255, 255, 255, 0.3); 
+    color: white;
+    text-decoration: none; text-transform: uppercase; letter-spacing: 3px; font-size: 0.75rem;
+    transition: 0.4s; background: rgba(255,255,255,0.05);
+    border-radius: 50px; /* Botón redondeado */
 }
 .btn-neon:hover { 
-    background: var(--neon-blue); 
-    color: #000; 
-    box-shadow: 0 0 30px var(--neon-blue), 0 0 50px rgba(0, 243, 255, 0.5); /* Más resplandor al hover */
+    background: white; color: black; 
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.6); 
 }
 
 /* Proyectos Grid */
-#projects { 
-    padding: 100px 50px; 
-    background: linear-gradient(to bottom, var(--bg-dark), #030010); /* Degardado sutil al fondo */
-}
-.section-title { 
-    font-size: 2.2rem; 
-    margin-bottom: 60px; 
-    border-left: 4px solid var(--neon-blue); 
-    padding-left: 20px; 
-    text-shadow: 0 0 10px var(--neon-blue); /* Resplandor en títulos de sección */
-}
+#projects { padding: 100px 50px; background: #050505; }
+.section-title { font-size: 2rem; margin-bottom: 50px; border-left: 4px solid var(--accent-white); padding-left: 15px; color: white; }
 .projects-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
 
-/* Project Card: Más efecto glassmorphism y sombra */
 .project-card {
-    background: var(--card-bg); 
-    border: 1px solid rgba(255,255,255,0.08); /* Borde más sutil */
-    backdrop-filter: blur(3px); /* Blur en las tarjetas de proyecto */
-    box-shadow: 0 0 10px rgba(0, 243, 255, 0.05); /* Sombra suave */
+    background: var(--card-bg); border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 15px; overflow: hidden; cursor: pointer; transition: 0.4s;
 }
-.project-card:hover { 
-    transform: translateY(-8px); /* Sube un poco más al pasar el mouse */
-    border-color: var(--neon-blue); 
-    box-shadow: 0 0 20px rgba(0, 243, 255, 0.3), 0 0 40px rgba(0, 243, 255, 0.15); /* Resplandor más fuerte */
-}
-.card-image { height: 180px; background-size: cover; background-position: center; }
-.card-info { padding: 20px; }
-.tag { font-size: 0.7rem; background: rgba(0, 243, 255, 0.1); color: var(--neon-blue); padding: 5px 10px; border-radius: 20px; margin-right: 5px; }
+.project-card:hover { transform: translateY(-5px); border-color: var(--accent-white); box-shadow: 0 0 20px rgba(255, 255, 255, 0.1); }
+.card-image { height: 180px; background-size: cover; background-position: center; filter: grayscale(100%); transition: 0.4s; }
+.project-card:hover .card-image { filter: grayscale(0%); } /* Vuelve el color al pasar mouse */
 
-/* Modal (Overlay) */
+.card-info { padding: 20px; }
+.card-info h3 { color: white; margin-bottom: 5px; }
+.card-info p { color: #888; font-size: 0.9rem; margin-bottom: 15px; }
+.tag { font-size: 0.7rem; background: rgba(255, 255, 255, 0.1); color: white; padding: 5px 10px; border-radius: 20px; margin-right: 5px; }
+
+/* Modal */
 .modal {
     display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%;
-    background-color: rgba(0,0,0,0.9); backdrop-filter: blur(5px);
+    background-color: rgba(0,0,0,0.95); backdrop-filter: blur(5px);
 }
-/* Modal Content: Más glassmorphism */
 .modal-content {
-    background-color: rgba(17, 17, 17, 0.9); /* Un poco más de transparencia */
-    margin: 3% auto; /* Más arriba */
-    width: 90%; /* Un poco más ancho */
-    height: 90%; /* Más alto */
-    backdrop-filter: blur(15px); /* Mucho blur para el modal */
-    box-shadow: 0 0 40px rgba(0, 243, 255, 0.2); /* Sombra más intensa */
+    background-color: #0a0a0a; margin: 5% auto; padding: 30px; border: 1px solid #333;
+    width: 85%; height: 85%; overflow-y: auto; border-radius: 10px; position: relative;
 }
 .close-btn { position: absolute; top: 15px; right: 25px; color: #fff; font-size: 35px; cursor: pointer; }
 .project-detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 20px; height: 80%; }
 .detail-img { width: 100%; border-radius: 5px; margin-bottom: 20px; }
-.code-block { background: #222; padding: 15px; border-radius: 5px; font-family: monospace; color: #0f0; overflow-x: auto; }
+.code-block { background: #111; padding: 15px; border-radius: 5px; font-family: monospace; color: #ddd; border: 1px solid #333; overflow-x: auto; }
 .pdf-viewer { width: 100%; height: 100%; border: none; background: #fff; }
 
 @media (max-width: 768px) {
     .project-detail-grid { grid-template-columns: 1fr; }
-    h1 { font-size: 2.5rem; }
+    h1 { font-size: 2.5rem; letter-spacing: 3px; }
+    .hero-content { padding: 30px 20px; width: 90%; }
 }
