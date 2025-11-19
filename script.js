@@ -86,16 +86,16 @@ const init3D = () => {
     loader.load('https://unpkg.com/three@0.160.0/examples/fonts/helvetiker_regular.typeface.json', function (font) {
         
         const textMaterialBase = new THREE.MeshBasicMaterial({
-            color: 0x00ffff, // Cian
+            color: 0xffffff, // white
             transparent: true,
-            opacity: 0.5,
+            opacity: 0.3,
             side: THREE.DoubleSide
         });
 
         formulas.forEach((formula, i) => {
             const textGeo = new TextGeometry(formula, {
                 font: font,
-                size: 0.3,      
+                size: 0.25,      
                 height: 0.02,   
                 curveSegments: 12,
                 bevelEnabled: false
@@ -111,7 +111,7 @@ const init3D = () => {
 
             // Posicionamiento
             const theta = Math.random() * Math.PI * 2;
-            const radius = 3.5 + Math.random() * 2; 
+            const radius = 6.5 + Math.random() * 2; 
             
             textMesh.position.x = Math.cos(theta) * radius;
             textMesh.position.y = (Math.random() - 0.5) * 5;
@@ -168,12 +168,12 @@ const init3D = () => {
                 const isHovered = intersects.find(hit => hit.object === item.mesh);
 
                 if (isHovered) {
-                    item.mesh.material.opacity = 1;        
+                    item.mesh.material.opacity = 0.8;        
                     item.mesh.material.color.set(0xffffff); 
                     item.mesh.scale.setScalar(1.2);         
                 } else {
-                    item.mesh.material.opacity = 0.4;       
-                    item.mesh.material.color.set(0x00ffff); 
+                    item.mesh.material.opacity = 0.3;       
+                    item.mesh.material.color.set(0xffffff); 
                     item.mesh.scale.setScalar(1.0);
                 }
             });
