@@ -1,6 +1,6 @@
-// --- Lógica 3D con Three.js (Estilo White Ethereal - Más Partículas y Movimiento) ---
+// --- Lógica 3D con Three.js (Estilo Deep Space - Partículas Corregidas) ---
 const init3D = () => {
-    console.log("Inicializando 3D Ethereal...");
+    console.log("Inicializando 3D Deep Space...");
 
     const container = document.getElementById('canvas-container');
 
@@ -11,8 +11,8 @@ const init3D = () => {
 
     // Escena
     const scene = new THREE.Scene();
-    // Niebla negra para profundidad (hace que las partículas lejanas se desvanezcan)
-    scene.fog = new THREE.FogExp2(0x000000, 0.02);
+    // Reducimos un poco la niebla para que se vean las partículas del fondo lejano
+    scene.fog = new THREE.FogExp2(0x000000, 0.015);
 
     // Cámara
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -24,7 +24,7 @@ const init3D = () => {
     renderer.setPixelRatio(window.devicePixelRatio);
     container.appendChild(renderer.domElement);
 
-    // --- Objeto Central: Esfera Blanca Fantasma ---
+    // --- Objeto Central: Esfera Blanca Fantasma (Sin cambios, como te gustó) ---
     const geometry = new THREE.IcosahedronGeometry(2.2, 4);
     const originalPositions = geometry.attributes.position.array.slice(); 
     
@@ -32,45 +32,41 @@ const init3D = () => {
         color: 0xffffff, 
         wireframe: true,
         transparent: true,
-        opacity: 0.25 // Ajustado para visibilidad
+        opacity: 0.5 // Mantenemos la visibilidad que te gustó
     });
     
     const sphere = new THREE.Mesh(geometry, material);
     scene.add(sphere);
 
-    // --- Partículas de Fondo (MASIVAS Y EN MOVIMIENTO) ---
+    // --- Partículas de Fondo (MODIFICADO PARA MAYOR VISIBILIDAD) ---
     const particlesGeometry = new THREE.BufferGeometry();
-    const particlesCount = 3000; // AUMENTADO: De 1000 a 3000 partículas
+    const particlesCount = 6000; // AUMENTADO: De 3000 a 6000 para llenar el espacio
     
     const posArray = new Float32Array(particlesCount * 3);
-    // Guardamos las posiciones iniciales para calcular el movimiento relativo
     const initialParticlePositions = new Float32Array(particlesCount * 3); 
-    // Guardamos velocidades aleatorias para cada partícula
     const particleSpeeds = new Float32Array(particlesCount);
 
     for(let i = 0; i < particlesCount; i++) {
         const i3 = i * 3;
-        // Posiciones aleatorias
-        posArray[i3] = (Math.random() - 0.5) * 40; // X
-        posArray[i3 + 1] = (Math.random() - 0.5) * 40; // Y
-        posArray[i3 + 2] = (Math.random() - 0.5) * 40; // Z
+        // AUMENTADO EL RANGO: De 40 a 90 para llenar más pantalla
+        posArray[i3] = (Math.random() - 0.5) * 90; 
+        posArray[i3 + 1] = (Math.random() - 0.5) * 90; 
+        posArray[i3 + 2] = (Math.random() - 0.5) * 90; 
 
-        // Guardamos la posición inicial
         initialParticlePositions[i3] = posArray[i3];
         initialParticlePositions[i3+1] = posArray[i3+1];
         initialParticlePositions[i3+2] = posArray[i3+2];
 
-        // Velocidad aleatoria para cada una (para que no se muevan igual)
         particleSpeeds[i] = Math.random(); 
     }
 
     particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
     
     const particlesMaterial = new THREE.PointsMaterial({ 
-        size: 0.02, 
+        size: 0.05, // AUMENTADO: De 0.02 a 0.05 (Crucial para verse con el blur)
         color: 0xffffff, 
         transparent: true, 
-        opacity: 0.4 // Un poco más visibles
+        opacity: 0.8 // AUMENTADO: Para que brillen más
     });
     const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
     scene.add(particlesMesh);
@@ -92,34 +88,30 @@ const init3D = () => {
         sphere.rotation.y += 0.001;
         sphere.rotation.z += 0.0005;
 
-        // 2. Movimiento del Grupo de Partículas (Rotación general)
-        particlesMesh.rotation.y = -time * 0.05; 
+        // 2. Movimiento del Grupo de Partículas
+        particlesMesh.rotation.y = -time * 0.03; // Rotación suave del universo
 
-        // 3. Movimiento INDIVIDUAL de partículas (Efecto flotante)
+        // 3. Movimiento INDIVIDUAL (Flotación)
         const pPositions = particlesGeometry.attributes.position.array;
         
         for(let i = 0; i < particlesCount; i++) {
             const i3 = i * 3;
-            
-            // Hacemos que floten en el eje Y usando Seno basado en el tiempo y su velocidad única
-            // initialParticlePositions[i3+1] es la base Y original
-            // Math.sin(time + particleSpeeds[i] * 10) crea la oscilación
+            // Movimiento vertical suave oscilatorio
             pPositions[i3 + 1] = initialParticlePositions[i3+1] + Math.sin(time + particleSpeeds[i] * 10) * 0.5;
         }
-        particlesGeometry.attributes.position.needsUpdate = true; // Importante para ver el movimiento
+        particlesGeometry.attributes.position.needsUpdate = true; 
 
-        // 4. Interacción con Mouse (Esfera)
+        // 4. Interacción Mouse (Esfera)
         const distToCenter = Math.sqrt(mouse.x * mouse.x + mouse.y * mouse.y);
         const maxDist = 0.5;
         if (distToCenter < maxDist) {
-            // Cuanto más cerca, más intenso (invertimos la distancia)
             targetIntensity = 2.5 * (1 - distToCenter / maxDist);
         } else {
             targetIntensity = 0.2; 
         }
         currentIntensity += (targetIntensity - currentIntensity) * 0.03; 
 
-        // 5. Deformación de vértices de la esfera
+        // 5. Deformación Esfera
         const positions = geometry.attributes.position.array;
         for (let i = 0; i < positions.length; i += 3) {
             const ox = originalPositions[i];
