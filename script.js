@@ -170,7 +170,7 @@ const init3D = () => {
                 if (isHovered) {
                     item.mesh.material.opacity = 0.8;        
                     item.mesh.material.color.set(0xffffff); 
-                    item.mesh.scale.setScalar(1.2);         
+                    item.mesh.scale.setScalar(1.1);         
                 } else {
                     item.mesh.material.opacity = 0.3;       
                     item.mesh.material.color.set(0xffffff); 
