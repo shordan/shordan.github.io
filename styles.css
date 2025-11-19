@@ -85,7 +85,12 @@ h2 {
 }
 
 /* Proyectos Grid */
-#projects { padding: 100px 50px; background: #050505; }
+#projects { 
+    padding: 100px 50px; 
+    /* CLAVE: Fondo transparente para ver el 3D, pero con un ligero tinte oscuro para leer mejor */
+    background: rgba(0, 0, 0, 0.3); 
+    min-height: 100vh;
+}
 .section-title { font-size: 2rem; margin-bottom: 50px; border-left: 4px solid var(--accent-white); padding-left: 15px; color: white; }
 .projects-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
 
