@@ -1,6 +1,6 @@
-// --- Lógica 3D con Three.js (Estilo Deep Space - Partículas Corregidas) ---
+// --- Lógica 3D con Three.js (Fusión: Esfera Nueva + Partículas Clásicas) ---
 const init3D = () => {
-    console.log("Inicializando 3D Deep Space...");
+    console.log("Inicializando 3D Fusion...");
 
     const container = document.getElementById('canvas-container');
 
@@ -11,8 +11,8 @@ const init3D = () => {
 
     // Escena
     const scene = new THREE.Scene();
-    // Reducimos un poco la niebla para que se vean las partículas del fondo lejano
-    scene.fog = new THREE.FogExp2(0x000000, 0.015);
+    // Niebla suave para profundidad
+    scene.fog = new THREE.FogExp2(0x000000, 0.02);
 
     // Cámara
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -24,7 +24,7 @@ const init3D = () => {
     renderer.setPixelRatio(window.devicePixelRatio);
     container.appendChild(renderer.domElement);
 
-    // --- Objeto Central: Esfera Blanca Fantasma (Sin cambios, como te gustó) ---
+    // --- 1. Objeto Central: Esfera Blanca Fantasma (TU FAVORITA) ---
     const geometry = new THREE.IcosahedronGeometry(2.2, 4);
     const originalPositions = geometry.attributes.position.array.slice(); 
     
@@ -32,42 +32,33 @@ const init3D = () => {
         color: 0xffffff, 
         wireframe: true,
         transparent: true,
-        opacity: 0.5 // Mantenemos la visibilidad que te gustó
+        opacity: 0.25 
     });
     
     const sphere = new THREE.Mesh(geometry, material);
     scene.add(sphere);
 
-    // --- Partículas de Fondo (MODIFICADO PARA MAYOR VISIBILIDAD) ---
+    // --- 2. Partículas de Fondo (LÓGICA CLÁSICA RESTAURADA) ---
     const particlesGeometry = new THREE.BufferGeometry();
-    const particlesCount = 6000; // AUMENTADO: De 3000 a 6000 para llenar el espacio
+    const particlesCount = 1500; // Cantidad media para buen rendimiento y densidad
     
     const posArray = new Float32Array(particlesCount * 3);
-    const initialParticlePositions = new Float32Array(particlesCount * 3); 
-    const particleSpeeds = new Float32Array(particlesCount);
 
-    for(let i = 0; i < particlesCount; i++) {
-        const i3 = i * 3;
-        // AUMENTADO EL RANGO: De 40 a 90 para llenar más pantalla
-        posArray[i3] = (Math.random() - 0.5) * 15; 
-        posArray[i3 + 1] = (Math.random() - 0.5) * 15; 
-        posArray[i3 + 2] = (Math.random() - 0.5) * 15; 
-
-        initialParticlePositions[i3] = posArray[i3];
-        initialParticlePositions[i3+1] = posArray[i3+1];
-        initialParticlePositions[i3+2] = posArray[i3+2];
-
-        particleSpeeds[i] = Math.random(); 
+    for(let i = 0; i < particlesCount * 3; i++) {
+        // VOLVEMOS A LA DISPERSIÓN CORTA (Como en el primer código)
+        // Antes era 90 (muy lejos), ahora es 25 (cerca de la esfera)
+        posArray[i] = (Math.random() - 0.5) * 25; 
     }
 
     particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
     
-    const particlesMaterial = new THREE.PointsMaterial({ 
-        size: 0.05, // AUMENTADO: De 0.02 a 0.05 (Crucial para verse con el blur)
-        color: 0xffffff, 
-        transparent: true, 
-        opacity: 0.8 // AUMENTADO: Para que brillen más
+    const particlesMaterial = new THREE.PointsMaterial({
+        size: 0.04, // Tamaño visible
+        color: 0xffffff, // Blanco
+        transparent: true,
+        opacity: 0.6 // Buena visibilidad
     });
+    
     const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
     scene.add(particlesMesh);
 
@@ -84,24 +75,16 @@ const init3D = () => {
         requestAnimationFrame(animate);
         const time = clock.getElapsedTime();
 
-        // 1. Movimiento de la Esfera Central
+        // A. Movimiento Esfera (Interactivo)
         sphere.rotation.y += 0.001;
         sphere.rotation.z += 0.0005;
 
-        // 2. Movimiento del Grupo de Partículas
-        particlesMesh.rotation.y = -time * 0.03; // Rotación suave del universo
+        // B. Movimiento Partículas (Lógica Clásica: Rotación Simple)
+        // Esto hace que giren alrededor de la esfera en bloque, como te gustaba
+        particlesMesh.rotation.y = -time * 0.05; 
+        particlesMesh.rotation.x = time * 0.01; // Un toque leve en X para dinamismo
 
-        // 3. Movimiento INDIVIDUAL (Flotación)
-        const pPositions = particlesGeometry.attributes.position.array;
-        
-        for(let i = 0; i < particlesCount; i++) {
-            const i3 = i * 3;
-            // Movimiento vertical suave oscilatorio
-            pPositions[i3 + 1] = initialParticlePositions[i3+1] + Math.sin(time + particleSpeeds[i] * 10) * 0.5;
-        }
-        particlesGeometry.attributes.position.needsUpdate = true; 
-
-        // 4. Interacción Mouse (Esfera)
+        // C. Interacción Mouse (Solo afecta a la esfera)
         const distToCenter = Math.sqrt(mouse.x * mouse.x + mouse.y * mouse.y);
         const maxDist = 0.5;
         if (distToCenter < maxDist) {
@@ -111,7 +94,7 @@ const init3D = () => {
         }
         currentIntensity += (targetIntensity - currentIntensity) * 0.03; 
 
-        // 5. Deformación Esfera
+        // D. Deformación Vértices Esfera
         const positions = geometry.attributes.position.array;
         for (let i = 0; i < positions.length; i += 3) {
             const ox = originalPositions[i];
@@ -142,7 +125,7 @@ const init3D = () => {
 
 init3D();
 
-// --- Modales ---
+// --- Modales (Sin cambios) ---
 function openModal(modalId) {
     document.getElementById(modalId).style.display = "block";
     document.body.style.overflow = "hidden";
