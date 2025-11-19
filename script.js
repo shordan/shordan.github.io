@@ -40,7 +40,7 @@ const init3D = () => {
 
     // --- Partículas de Fondo (Polvo de estrellas blanco) ---
     const particlesGeometry = new THREE.BufferGeometry();
-    const particlesCount = 1000; // Más partículas
+    const particlesCount = 3000; // Más partículas
     const posArray = new Float32Array(particlesCount * 3);
     for(let i = 0; i < particlesCount * 3; i++) {
         posArray[i] = (Math.random() - 0.5) * 35; 
