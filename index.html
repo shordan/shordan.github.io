@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="fr"> <head>
+<html lang="fr">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jordan Delgado | Ingénieur Robotique & Automatique</title>
@@ -48,23 +49,23 @@
             <div>
                 <h3 style="color: white; margin-bottom: 15px;">Mon Profil</h3>
                 <p style="margin-bottom: 15px;">
-                    Étudiant en double diplôme à l'<strong>IMT Atlantique</strong> (France) et à l'<strong>Université Nationale d'Ingénierie</strong> (Pérou), je me spécialise en Robotique et Interactions[cite: 2, 3, 12].
+                    Étudiant en double diplôme à l'<strong>IMT Atlantique</strong> (France) et à l'<strong>Université Nationale d'Ingénierie</strong> (Pérou), je me spécialise en Robotique et Interactions.
                 </p>
                 <p>
-                    Classé dans le top 10% de ma promotion [cite: 20], je possède une solide expérience en modélisation dynamique, vision par ordinateur et automatisation industrielle (Siemens)[cite: 22, 37, 42]. Je cherche aujourd'hui à appliquer ces compétences dans l'aéronautique.
+                    Classé dans le top 10% de ma promotion, je possède une solide expérience en modélisation dynamique, vision par ordinateur et automatisation industrielle (Siemens). Je cherche aujourd'hui à appliquer ces compétences dans l'aéronautique.
                 </p>
             </div>
             <div>
                 <h3 style="color: white; margin-bottom: 15px;">Expérience Récente</h3>
                 <div style="margin-bottom: 15px; border-left: 2px solid var(--accent-cyan); padding-left: 15px;">
                     <h4 style="color: var(--accent-cyan);">SIEMENS Digital Industries</h4>
-                    <span style="font-size: 0.8rem; color: #888;">Déc 2024 - Juil 2025 | Lima, Pérou [cite: 22, 24]</span>
-                    <p style="font-size: 0.9rem; margin-top: 5px;">Stage Ingénieur Automatisation & Contrôle. Gestion cybersécurité OT, Intégration IoT/IA et support technique niveau 3[cite: 23, 25, 27].</p>
+                    <span style="font-size: 0.8rem; color: #888;">Déc 2024 - Juil 2025 | Lima, Pérou</span>
+                    <p style="font-size: 0.9rem; margin-top: 5px;">Stage Ingénieur Automatisation & Contrôle. Gestion cybersécurité OT, Intégration IoT/IA et support technique niveau 3.</p>
                 </div>
                 <div style="border-left: 2px solid var(--accent-white); padding-left: 15px;">
                     <h4 style="color: white;">FTI Consulting</h4>
-                    <span style="font-size: 0.8rem; color: #888;">Jan 2023 - Déc 2024 [cite: 29, 35, 36]</span>
-                    <p style="font-size: 0.9rem; margin-top: 5px;">Ingénieur Conseil en Gestion de Projets. Configuration d'interfaces SQL et dashboards Power BI[cite: 30, 33].</p>
+                    <span style="font-size: 0.8rem; color: #888;">Jan 2023 - Déc 2024</span>
+                    <p style="font-size: 0.9rem; margin-top: 5px;">Ingénieur Conseil en Gestion de Projets. Configuration d'interfaces SQL et dashboards Power BI.</p>
                 </div>
             </div>
         </div>
@@ -83,94 +84,4 @@
                 </div>
             </div>
             
-            <div class="project-card" onclick="openModal('modal2')">
-                <div class="card-image" style="background-image: url('https://placehold.co/400x300/000000/bd00ff?text=Vision+Robotique');"></div>
-                <div class="card-info">
-                    <h3>Manipulateur 3-Axes & Vision</h3>
-                    <p>Contrôle par vision artificielle et "Hand Tracking".</p>
-                    <span class="tag">Python</span> <span class="tag">OpenCV</span> <span class="tag">Arduino</span>
-                </div>
-            </div>
-
-        </div>
-    </section>
-
-    <div id="modal1" class="modal">
-        <div class="modal-content">
-            <span class="close-btn" onclick="closeModal('modal1')">&times;</span>
-            <h2>Contrôle de Vol d'un Hexacoptère</h2>
-            <p style="color: var(--accent-cyan); margin-bottom: 20px;">Projet de Recherche (3 mois) [cite: 38]</p>
-            
-            <div class="project-detail-grid">
-                <div class="detail-left">
-                    <h3>Description Technique</h3>
-                    <p style="color: #ccc; margin-bottom: 15px; line-height: 1.6;">
-                        Ce projet visait à concevoir le système de contrôle complet pour un drone hexacoptère.
-                        <br><br>
-                        <ul style="margin-left: 20px; color: #ccc;">
-                            <li><strong>Modélisation :</strong> Approche Newton-Euler pour la dynamique 6-DOF (translation et rotation)[cite: 39].</li>
-                            <li><strong>Contrôle :</strong> Implémentation d'une boucle fermée pour la stabilisation et le suivi de trajectoire[cite: 40].</li>
-                            <li><strong>Validation :</strong> Simulation de scénarios complexes (décollage, perturbations) et analyse des singularités[cite: 41].</li>
-                        </ul>
-                    </p>
-                    <div class="code-block">
-                        <pre><code>% Dynamique Newton-Euler (Simplifiée)
-F_total = m * (acc_lin + cross(omega, v_lin));
-M_total = I * alpha + cross(omega, I * omega);
-
-% Boucle de Contrôle
-error = setpoint - current_state;
-output = PID_Controller(error, Kp, Ki, Kd);</code></pre>
-                    </div>
-                </div>
-                <div class="detail-right">
-                    <h3>Résultats de Simulation</h3>
-                    <img src="https://placehold.co/600x400/111/00f3ff?text=Simulation+Matlab" alt="Simulink Graph" class="detail-img">
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="modal2" class="modal">
-        <div class="modal-content">
-            <span class="close-btn" onclick="closeModal('modal2')">&times;</span>
-            <h2>Manipulateur Robotique 3-Axes</h2>
-            <p style="color: var(--accent-cyan); margin-bottom: 20px;">Projet de Conception (4 mois) [cite: 42]</p>
-            
-            <div class="project-detail-grid">
-                <div class="detail-left">
-                    <h3>Description Technique</h3>
-                    <p style="color: #ccc; margin-bottom: 15px; line-height: 1.6;">
-                        Conception et assemblage d'un robot cylindrique intégrant la vision par ordinateur pour un pilotage intuitif.
-                        <br><br>
-                        <ul style="margin-left: 20px; color: #ccc;">
-                            <li><strong>Mécanique :</strong> Conception mécanique et modélisation cinématique complète[cite: 42].</li>
-                            <li><strong>Interface :</strong> GUI Matlab pour le contrôle de position et communication série avec Arduino[cite: 43].</li>
-                            <li><strong>Vision IA :</strong> Système de "Hand Tracking" (suivi de la main) pour contrôler le gripper en temps réel[cite: 44].</li>
-                        </ul>
-                    </p>
-                    <div class="code-block">
-                        <pre><code>import cv2
-import mediapipe as mp
-
-# Logique de Hand Tracking
-if results.multi_hand_landmarks:
-    for hand_landmarks in results.multi_hand_landmarks:
-        # Calcul de la distance entre le pouce et l'index
-        length = calculate_distance(thumb_tip, index_tip)
-        
-        if length < 30:
-            arduino.write(b'GRIP_CLOSE') # Fermer la pince</code></pre>
-                    </div>
-                </div>
-                <div class="detail-right">
-                    <h3>Prototype & Vision</h3>
-                    <img src="https://placehold.co/600x400/111/bd00ff?text=OpenCV+Tracking" alt="Computer Vision" class="detail-img">
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script type="module" src="script.js"></script>
-</body>
-</html>
+            <div class="project-card" onclick="openModal
