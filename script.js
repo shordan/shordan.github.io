@@ -313,3 +313,63 @@ window.onclick = function(event) {
         event.target.querySelectorAll('video').forEach(video => video.pause());
     }
 }
+
+// ==========================================
+// 4. LÓGICA DE LIGHTBOX (PANTALLA COMPLETA)
+// ==========================================
+
+const lightbox = document.getElementById('fullscreen-lightbox');
+const lightboxImg = document.getElementById('fullscreen-image');
+const closeLightbox = document.getElementById('close-fullscreen');
+
+// Función para abrir el lightbox
+function openLightbox(src) {
+    if (!lightbox) return; // Seguridad si no existe el elemento
+    
+    lightbox.style.display = 'flex';
+    // Pequeño delay para permitir la transición de opacidad CSS
+    setTimeout(() => {
+        lightbox.classList.add('active');
+    }, 10);
+    lightboxImg.src = src;
+}
+
+// Función para cerrar
+function closeLightboxFunc() {
+    if (!lightbox) return;
+
+    lightbox.classList.remove('active');
+    setTimeout(() => {
+        lightbox.style.display = 'none';
+        lightboxImg.src = ''; // Limpiar src
+    }, 300); // Esperar a que termine la transición CSS
+}
+
+// Event Listeners Globales para abrir Lightbox
+// Usamos delegación de eventos para detectar clics en imágenes dentro de los sliders
+document.addEventListener('click', function(e) {
+    // Si el elemento clickeado tiene la clase 'slider-media' Y es una imagen (IMG)
+    if (e.target && e.target.classList.contains('slider-media') && e.target.tagName === 'IMG') {
+        openLightbox(e.target.src);
+    }
+});
+
+// Event Listeners para cerrar
+if(closeLightbox) closeLightbox.addEventListener('click', closeLightboxFunc);
+
+// Cerrar al dar clic fuera de la imagen (en el fondo oscuro)
+if(lightbox) {
+    lightbox.addEventListener('click', function(e) {
+        // Si el click fue directamente en el fondo (y no en la imagen)
+        if (e.target === lightbox) {
+            closeLightboxFunc();
+        }
+    });
+}
+
+// Cerrar con tecla ESC
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lightbox && lightbox.classList.contains('active')) {
+        closeLightboxFunc();
+    }
+});

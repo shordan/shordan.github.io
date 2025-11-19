@@ -220,6 +220,63 @@ h2 {
     transform: scale(1.2);
 }
 
+/* --- VISOR DE PANTALLA COMPLETA (LIGHTBOX) --- */
+#fullscreen-lightbox {
+    display: none; /* Oculto por defecto */
+    position: fixed;
+    z-index: 9999; /* Encima de todo (incluso del modal) */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9); /* Fondo muy oscuro */
+    backdrop-filter: blur(10px); /* Desenfoque del fondo */
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+/* Cuando está activo (clase controlada por JS) */
+#fullscreen-lightbox.active {
+    display: flex;
+    opacity: 1;
+}
+
+#fullscreen-image {
+    max-width: 90%;
+    max-height: 90%;
+    border-radius: 10px;
+    box-shadow: 0 0 50px rgba(0, 255, 255, 0.2); /* Resplandor Cyan */
+    transform: scale(0.9);
+    transition: transform 0.3s ease;
+}
+
+#fullscreen-lightbox.active #fullscreen-image {
+    transform: scale(1);
+}
+
+#close-fullscreen {
+    position: absolute;
+    top: 20px;
+    right: 40px;
+    color: #fff;
+    font-size: 40px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+    z-index: 10000;
+}
+
+#close-fullscreen:hover {
+    color: var(--accent-cyan);
+}
+
+/* Cursor de zoom para las imágenes del slider */
+.slider-media {
+    cursor: zoom-in;
+}
+
 /* --- RESPONSIVE --- */
 @media (max-width: 768px) {
     .project-detail-grid { grid-template-columns: 1fr; }
