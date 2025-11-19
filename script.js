@@ -1,8 +1,9 @@
 // --- Lógica 3D con Three.js (Fusión Final: Fórmulas Robóticas Flotantes) ---
 
-// Importamos FontLoader y TextGeometry desde CDN (Necesario para texto 3D)
-import { FontLoader } from 'https://threejs.org/examples/jsm/loaders/FontLoader.js';
-import { TextGeometry } from 'https://threejs.org/examples/jsm/geometries/TextGeometry.js';
+// IMPORTANTE: Ahora importamos THREE y los complementos usando el Import Map
+import * as THREE from 'three';
+import { FontLoader } from 'three/addons/loaders/FontLoader.js';
+import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
 
 const init3D = () => {
     console.log("Inicializando 3D Matemático...");
@@ -73,16 +74,16 @@ const init3D = () => {
         "T = Rp",         // Transformación
         "PID",            // Control
         "dx/dt",          // Derivada
-        "τ = M(q)a"       // Dinámica simplificada
+        "Tau = M(q)a"       // Dinámica (Usamos Tau en vez del simbolo griego para evitar errores de fuente)
     ];
 
-    const floatingFormulas = []; // Array para guardar las mallas de texto
+    const floatingFormulas = []; 
 
     // Cargador de Fuente
     const loader = new FontLoader();
     
-    // Cargamos la fuente desde el repositorio de ejemplos de Three.js
-    loader.load('https://threejs.org/examples/fonts/helvetiker_regular.typeface.json', function (font) {
+    // Cargamos la fuente desde el CDN usando la ruta del Import Map
+    loader.load('https://unpkg.com/three@0.160.0/examples/fonts/helvetiker_regular.typeface.json', function (font) {
         
         const textMaterialBase = new THREE.MeshBasicMaterial({
             color: 0x00ffff, // Cian
@@ -94,39 +95,37 @@ const init3D = () => {
         formulas.forEach((formula, i) => {
             const textGeo = new TextGeometry(formula, {
                 font: font,
-                size: 0.3,      // Tamaño del texto
-                height: 0.02,   // Grosor del texto (profundidad 3D)
+                size: 0.3,      
+                height: 0.02,   
                 curveSegments: 12,
                 bevelEnabled: false
             });
 
-            // Centrar el texto en su propio eje
+            // Centrar el texto
             textGeo.computeBoundingBox();
             const centerOffset = - 0.5 * ( textGeo.boundingBox.max.x - textGeo.boundingBox.min.x );
             textGeo.translate( centerOffset, 0, 0 );
 
-            // Creamos la malla con material clonado (independiente)
+            // Material independiente
             const textMesh = new THREE.Mesh(textGeo, textMaterialBase.clone());
 
-            // Posicionamiento aleatorio orbital
+            // Posicionamiento
             const theta = Math.random() * Math.PI * 2;
-            const radius = 3.5 + Math.random() * 2; // Distancia orbital
+            const radius = 3.5 + Math.random() * 2; 
             
             textMesh.position.x = Math.cos(theta) * radius;
             textMesh.position.y = (Math.random() - 0.5) * 5;
             textMesh.position.z = Math.sin(theta) * radius * 0.5;
 
-            // Orientar texto hacia la cámara inicialmente
             textMesh.lookAt(camera.position);
 
             scene.add(textMesh);
             
-            // Guardamos datos para animación
             floatingFormulas.push({
                 mesh: textMesh,
                 initialY: textMesh.position.y,
                 speed: 0.001 + Math.random() * 0.002,
-                floatOffset: Math.random() * 100 // Para que no floten sincronizados
+                floatOffset: Math.random() * 100 
             });
         });
     });
@@ -152,31 +151,29 @@ const init3D = () => {
         particlesMesh.rotation.y = -time * 0.05; 
         particlesMesh.rotation.x = time * 0.01; 
 
-        // C. Animación e Interacción de Fórmulas
-        // (Solo ejecutamos si ya se cargaron las fuentes y existen fórmulas)
+        // C. Animación Fórmulas
         if (floatingFormulas.length > 0) {
             raycaster.setFromCamera(mouse, camera);
             const intersects = raycaster.intersectObjects(floatingFormulas.map(f => f.mesh));
 
             floatingFormulas.forEach(item => {
-                // 1. Flotación suave ("Efecto respiración")
+                // Flotación
                 item.mesh.position.y = item.initialY + Math.sin(time + item.floatOffset) * 0.4;
                 
-                // 2. Rotación lenta para que siempre traten de mirar al frente pero con variación
+                // Mirar a cámara + twist
                 item.mesh.lookAt(camera.position); 
-                // Le damos un pequeño twist extra para que no se vean estáticas
                 item.mesh.rotation.z = Math.sin(time * 0.5 + item.floatOffset) * 0.1;
 
-                // 3. Interacción Hover (Individual)
+                // Interacción
                 const isHovered = intersects.find(hit => hit.object === item.mesh);
 
                 if (isHovered) {
-                    item.mesh.material.opacity = 1;        // Opacidad total
-                    item.mesh.material.color.set(0xffffff); // Blanco brillante
-                    item.mesh.scale.setScalar(1.2);         // Crece más evidente
+                    item.mesh.material.opacity = 1;        
+                    item.mesh.material.color.set(0xffffff); 
+                    item.mesh.scale.setScalar(1.2);         
                 } else {
-                    item.mesh.material.opacity = 0.4;       // Fantasma
-                    item.mesh.material.color.set(0x00ffff); // Cian
+                    item.mesh.material.opacity = 0.4;       
+                    item.mesh.material.color.set(0x00ffff); 
                     item.mesh.scale.setScalar(1.0);
                 }
             });
@@ -222,11 +219,12 @@ const init3D = () => {
 init3D();
 
 // --- Modales (Sin cambios) ---
-function openModal(modalId) {
+// Asegúrate de exportar o hacer globales estas funciones si el módulo las encierra
+window.openModal = function(modalId) {
     document.getElementById(modalId).style.display = "block";
     document.body.style.overflow = "hidden";
 }
-function closeModal(modalId) {
+window.closeModal = function(modalId) {
     document.getElementById(modalId).style.display = "none";
     document.body.style.overflow = "auto";
 }
