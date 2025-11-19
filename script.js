@@ -1,12 +1,16 @@
-// --- Lógica 3D con Three.js (Fusión Final: Paneles Independientes) ---
+// --- Lógica 3D con Three.js (Fusión Final: Fórmulas Robóticas Flotantes) ---
+
+// Importamos FontLoader y TextGeometry desde CDN (Necesario para texto 3D)
+import { FontLoader } from 'https://threejs.org/examples/jsm/loaders/FontLoader.js';
+import { TextGeometry } from 'https://threejs.org/examples/jsm/geometries/TextGeometry.js';
+
 const init3D = () => {
-    console.log("Inicializando 3D Final...");
+    console.log("Inicializando 3D Matemático...");
 
     const container = document.getElementById('canvas-container');
 
     // Variables interacción
     const mouse = new THREE.Vector2();
-    // Raycaster para detectar si el mouse toca los paneles
     const raycaster = new THREE.Raycaster();
 
     let targetIntensity = 0; 
@@ -14,7 +18,6 @@ const init3D = () => {
 
     // Escena
     const scene = new THREE.Scene();
-    // Niebla suave para profundidad
     scene.fog = new THREE.FogExp2(0x000000, 0.02);
 
     // Cámara
@@ -44,7 +47,6 @@ const init3D = () => {
     // --- 2. Partículas de Fondo ---
     const particlesGeometry = new THREE.BufferGeometry();
     const particlesCount = 2000; 
-    
     const posArray = new Float32Array(particlesCount * 3);
 
     for(let i = 0; i < particlesCount * 3; i++) {
@@ -63,44 +65,71 @@ const init3D = () => {
     const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
     scene.add(particlesMesh);
 
-    // --- 3. NUEVO: Paneles de Datos Flotantes (Efecto Robótica) ---
-    const dataPanels = [];
-    const panelCount = 20; 
+    // --- 3. NUEVO: Fórmulas de Robótica Flotantes ---
+    const formulas = [
+        "J(q)",           // Jacobiano
+        "x = f(q)",       // Cinemática Directa
+        "q = f^-1(x)",    // Cinemática Inversa
+        "T = Rp",         // Transformación
+        "PID",            // Control
+        "dx/dt",          // Derivada
+        "τ = M(q)a"       // Dinámica simplificada
+    ];
+
+    const floatingFormulas = []; // Array para guardar las mallas de texto
+
+    // Cargador de Fuente
+    const loader = new FontLoader();
     
-    // Definimos el material base
-    const basePanelMaterial = new THREE.MeshBasicMaterial({
-        color: 0x00ffff, // Cian Tecnológico
-        transparent: true,
-        opacity: 0.6,   
-        side: THREE.DoubleSide,
-        wireframe: true 
+    // Cargamos la fuente desde el repositorio de ejemplos de Three.js
+    loader.load('https://threejs.org/examples/fonts/helvetiker_regular.typeface.json', function (font) {
+        
+        const textMaterialBase = new THREE.MeshBasicMaterial({
+            color: 0x00ffff, // Cian
+            transparent: true,
+            opacity: 0.5,
+            side: THREE.DoubleSide
+        });
+
+        formulas.forEach((formula, i) => {
+            const textGeo = new TextGeometry(formula, {
+                font: font,
+                size: 0.3,      // Tamaño del texto
+                height: 0.02,   // Grosor del texto (profundidad 3D)
+                curveSegments: 12,
+                bevelEnabled: false
+            });
+
+            // Centrar el texto en su propio eje
+            textGeo.computeBoundingBox();
+            const centerOffset = - 0.5 * ( textGeo.boundingBox.max.x - textGeo.boundingBox.min.x );
+            textGeo.translate( centerOffset, 0, 0 );
+
+            // Creamos la malla con material clonado (independiente)
+            const textMesh = new THREE.Mesh(textGeo, textMaterialBase.clone());
+
+            // Posicionamiento aleatorio orbital
+            const theta = Math.random() * Math.PI * 2;
+            const radius = 3.5 + Math.random() * 2; // Distancia orbital
+            
+            textMesh.position.x = Math.cos(theta) * radius;
+            textMesh.position.y = (Math.random() - 0.5) * 5;
+            textMesh.position.z = Math.sin(theta) * radius * 0.5;
+
+            // Orientar texto hacia la cámara inicialmente
+            textMesh.lookAt(camera.position);
+
+            scene.add(textMesh);
+            
+            // Guardamos datos para animación
+            floatingFormulas.push({
+                mesh: textMesh,
+                initialY: textMesh.position.y,
+                speed: 0.001 + Math.random() * 0.002,
+                floatOffset: Math.random() * 100 // Para que no floten sincronizados
+            });
+        });
     });
-
-    for (let i = 0; i < panelCount; i++) {
-        let panelShape;
-        if (i % 2 === 0) {
-            panelShape = new THREE.PlaneGeometry(2, 1.2); 
-        } else {
-            panelShape = new THREE.CircleGeometry(1, 3); 
-        }
-        
-        // *** AQUÍ ESTÁ LA SOLUCIÓN ***
-        // Usamos .clone() para que cada panel tenga su PROPIO material independiente
-        const panelMesh = new THREE.Mesh(panelShape, basePanelMaterial.clone());
-
-        // Posicionamiento aleatorio
-        const theta = Math.random() * Math.PI * 2; 
-        const radius = 3.5 + Math.random() * 1.5; 
-        
-        panelMesh.position.x = Math.cos(theta) * radius;
-        panelMesh.position.y = (Math.random() - 0.5) * 4; 
-        panelMesh.position.z = Math.sin(theta) * radius * 0.5; 
-
-        panelMesh.rotation.set(Math.random(), Math.random(), Math.random());
-
-        scene.add(panelMesh);
-        dataPanels.push({ mesh: panelMesh, initialY: panelMesh.position.y, speed: 0.002 + Math.random() * 0.002 });
-    }
 
     // --- Event Listener Mouse ---
     document.addEventListener('mousemove', (event) => {
@@ -123,32 +152,37 @@ const init3D = () => {
         particlesMesh.rotation.y = -time * 0.05; 
         particlesMesh.rotation.x = time * 0.01; 
 
-        // C. Movimiento e Interacción de Paneles
-        raycaster.setFromCamera(mouse, camera);
-        const intersects = raycaster.intersectObjects(dataPanels.map(p => p.mesh));
+        // C. Animación e Interacción de Fórmulas
+        // (Solo ejecutamos si ya se cargaron las fuentes y existen fórmulas)
+        if (floatingFormulas.length > 0) {
+            raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObjects(floatingFormulas.map(f => f.mesh));
 
-        dataPanels.forEach(panel => {
-            // 1. Animación flotante
-            panel.mesh.rotation.x += panel.speed;
-            panel.mesh.rotation.y += panel.speed;
-            panel.mesh.position.y = panel.initialY + Math.sin(time + panel.initialY) * 0.3;
+            floatingFormulas.forEach(item => {
+                // 1. Flotación suave ("Efecto respiración")
+                item.mesh.position.y = item.initialY + Math.sin(time + item.floatOffset) * 0.4;
+                
+                // 2. Rotación lenta para que siempre traten de mirar al frente pero con variación
+                item.mesh.lookAt(camera.position); 
+                // Le damos un pequeño twist extra para que no se vean estáticas
+                item.mesh.rotation.z = Math.sin(time * 0.5 + item.floatOffset) * 0.1;
 
-            // 2. Interacción (Hover)
-            // Verificamos si ESTE panel específico está siendo tocado
-            const isHovered = intersects.find(hit => hit.object === panel.mesh);
+                // 3. Interacción Hover (Individual)
+                const isHovered = intersects.find(hit => hit.object === item.mesh);
 
-            if (isHovered) {
-                panel.mesh.material.opacity = 1; // Se ilumina al máximo
-                panel.mesh.material.color.set(0xffffff); // Se pone blanco brillante
-                panel.mesh.scale.setScalar(1.1); 
-            } else {
-                panel.mesh.material.opacity = 0.3; // Vuelve a ser tenue
-                panel.mesh.material.color.set(0x00ffff); // Vuelve a Cian
-                panel.mesh.scale.setScalar(1.0); 
-            }
-        });
+                if (isHovered) {
+                    item.mesh.material.opacity = 1;        // Opacidad total
+                    item.mesh.material.color.set(0xffffff); // Blanco brillante
+                    item.mesh.scale.setScalar(1.2);         // Crece más evidente
+                } else {
+                    item.mesh.material.opacity = 0.4;       // Fantasma
+                    item.mesh.material.color.set(0x00ffff); // Cian
+                    item.mesh.scale.setScalar(1.0);
+                }
+            });
+        }
 
-        // D. Interacción Mouse Esfera
+        // D. Interacción Esfera
         const distToCenter = Math.sqrt(mouse.x * mouse.x + mouse.y * mouse.y);
         const maxDist = 0.5;
         if (distToCenter < maxDist) {
@@ -158,22 +192,20 @@ const init3D = () => {
         }
         currentIntensity += (targetIntensity - currentIntensity) * 0.03; 
 
-        // E. Deformación Vértices Esfera
+        // E. Deformación
         const positions = geometry.attributes.position.array;
         for (let i = 0; i < positions.length; i += 3) {
             const ox = originalPositions[i];
             const oy = originalPositions[i + 1];
             const oz = originalPositions[i + 2];
-
             const noise = Math.sin(ox * 1.5 + time * 1.5) * Math.cos(oy * 1.5 + time * 2);
             const deformation = 1 + (noise * 0.15 * currentIntensity);
-
             positions[i] = ox * deformation;
             positions[i + 1] = oy * deformation;
             positions[i + 2] = oz * deformation;
         }
-
         geometry.attributes.position.needsUpdate = true;
+
         renderer.render(scene, camera);
     };
 
