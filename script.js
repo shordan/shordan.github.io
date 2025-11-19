@@ -112,7 +112,8 @@ const init3D = () => {
         const distToCenter = Math.sqrt(mouse.x * mouse.x + mouse.y * mouse.y);
         const maxDist = 0.5;
         if (distToCenter < maxDist) {
-            targetIntensity = 1.5; 
+            // Cuanto más cerca, más intenso (invertimos la distancia)
+            targetIntensity = 2.5 * (1 - distToCenter / maxDist);
         } else {
             targetIntensity = 0.2; 
         }
