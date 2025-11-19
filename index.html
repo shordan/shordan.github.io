@@ -52,7 +52,7 @@
                     Étudiant en double diplôme à l'<strong>IMT Atlantique</strong> (France) et à l'<strong>Université Nationale d'Ingénierie</strong> (Pérou), je me spécialise en Robotique et Interactions.
                 </p>
                 <p>
-                    [cite_start]Classé dans le top 10% de ma promotion[cite: 20], je possède une solide expérience en modélisation dynamique, vision par ordinateur et automatisation industrielle (Siemens). Je cherche aujourd'hui à appliquer ces compétences dans l'aéronautique.
+                    Classé dans le top 10% de ma promotion, je possède une solide expérience en modélisation dynamique, vision par ordinateur et automatisation industrielle (Siemens). Je cherche aujourd'hui à appliquer ces compétences dans l'aéronautique.
                 </p>
             </div>
             <div>
@@ -164,10 +164,45 @@ if results.multi_hand_landmarks:
             arduino.write(b'GRIP_CLOSE') # Fermer la pince</code></pre>
                     </div>
                 </div>
+
                 <div class="detail-right">
-                    <h3>Prototype & Vision</h3>
-                    <img src="https://placehold.co/600x400/111/bd00ff?text=OpenCV+Tracking" alt="Computer Vision" class="detail-img">
                     
+                    <h3 style="color: white; margin-bottom: 20px;">Galerie Multimédia</h3>
+                    
+                    <div class="media-slider-container">
+                        <div class="media-slider">
+                            <div class="media-slide active">
+                                <img src="https://placehold.co/600x350/000000/00ffff?text=Simulacion+Matlab" alt="Simulación del Robot" class="slider-media">
+                                <div class="media-caption">Simulación Cinética en Matlab</div>
+                            </div>
+                            
+                            <div class="media-slide">
+                                <video controls muted loop playsinline class="slider-media">
+                                    <source src="https://placehold.co/600x350/000000/ff00ff?text=Video+Robot" type="video/mp4">
+                                    Tu navigateur ne supporte pas la balise vidéo.
+                                </video>
+                                <div class="media-caption">Robot 3-Axes en Acción</div>
+                            </div>
+                            
+                            <div class="media-slide">
+                                <img src="https://placehold.co/600x350/000000/bd00ff?text=Hand+Tracking" alt="Hand Tracking" class="slider-media">
+                                <div class="media-caption">Interfaz de Hand Tracking con OpenCV</div>
+                            </div>
+                            
+                            <div class="media-slide">
+                                <video controls muted loop playsinline class="slider-media">
+                                    <source src="https://placehold.co/600x350/000000/ffffff?text=Montaje+Video" type="video/mp4">
+                                    Tu navigateur ne supporte pas la balise vidéo.
+                                </video>
+                                <div class="media-caption">Ensamblaje y Calibración</div>
+                            </div>
+                        </div>
+                        
+                        <button class="slider-btn prev-btn"><i class="fas fa-chevron-left"></i></button>
+                        <button class="slider-btn next-btn"><i class="fas fa-chevron-right"></i></button>
+                        <div class="slider-dots"></div> 
+                    </div>
+
                     <h3 style="margin-top: 30px; color: white;">Article de Recherche (Paper)</h3>
                     
                     <iframe src="docs/papier_robotique.pdf" class="pdf-viewer" title="Article Robotique" style="height: 500px; width: 100%; border-radius: 8px; border: none;"></iframe>
@@ -177,6 +212,7 @@ if results.multi_hand_landmarks:
                             <i class="fas fa-external-link-alt"></i> Ouvrir PDF Plein Écran
                         </a>
                     </div>
+
                 </div>
             </div>
         </div>
