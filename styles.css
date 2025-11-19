@@ -37,10 +37,17 @@ body { background-color: var(--bg-dark); color: var(--text-main); overflow-x: hi
 }
 
 /* EL EFECTO DREAMY (BLUR AL FONDO 3D) */
+/* --- FONDO 3D FIJO --- */
 #canvas-container { 
-    position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; 
-    filter: blur(3px); /* AQUÍ ESTÁ EL TRUCO: Suaviza esfera y partículas */
-    opacity: 0.8; /* Un poco más sutil */
+    position: fixed; /* CLAVE: Se queda fijo al hacer scroll */
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 100%; 
+    z-index: -1; /* Detrás de todo */
+    /* Si quieres ver las fórmulas nítidas, quita el blur. Si lo quieres onírico, déjalo. */
+    filter: blur(3px); 
+    opacity: 0.8;
 }
 
 /* Contenedor del texto (Invisible, solo para centrar) */
