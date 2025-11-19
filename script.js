@@ -1,11 +1,14 @@
-// --- Lógica 3D con Three.js (Fusión: Esfera Nueva + Partículas Clásicas) ---
+// --- Lógica 3D con Three.js (Fusión Final: Esfera + Partículas Clásicas + Paneles Robótica) ---
 const init3D = () => {
-    console.log("Inicializando 3D Fusion...");
+    console.log("Inicializando 3D Final...");
 
     const container = document.getElementById('canvas-container');
 
     // Variables interacción
     const mouse = new THREE.Vector2();
+    // Raycaster para detectar si el mouse toca los paneles
+    const raycaster = new THREE.Raycaster();
+
     let targetIntensity = 0; 
     let currentIntensity = 0; 
 
@@ -40,30 +43,68 @@ const init3D = () => {
 
     // --- 2. Partículas de Fondo (LÓGICA CLÁSICA RESTAURADA) ---
     const particlesGeometry = new THREE.BufferGeometry();
-    const particlesCount = 2000; // Cantidad media para buen rendimiento y densidad
+    const particlesCount = 2000; 
     
     const posArray = new Float32Array(particlesCount * 3);
 
     for(let i = 0; i < particlesCount * 3; i++) {
-        // VOLVEMOS A LA DISPERSIÓN CORTA (Como en el primer código)
-        // Antes era 90 (muy lejos), ahora es 25 (cerca de la esfera)
+        // Dispersión corta (15) para mantenerlas concentradas
         posArray[i] = (Math.random() - 0.5) * 15; 
     }
 
     particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
     
     const particlesMaterial = new THREE.PointsMaterial({
-        size: 0.04, // Tamaño visible
-        color: 0xffffff, // Blanco
+        size: 0.04, 
+        color: 0xffffff, 
         transparent: true,
-        opacity: 0.8 // Buena visibilidad
+        opacity: 0.8 
     });
     
     const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
     scene.add(particlesMesh);
 
+    // --- 3. NUEVO: Paneles de Datos Flotantes (Efecto Robótica) ---
+    const dataPanels = [];
+    const panelCount = 5; // 5 Paneles flotando
+    const panelMaterial = new THREE.MeshBasicMaterial({
+        color: 0x00ffff, // Cian Tecnológico
+        transparent: true,
+        opacity: 0.1,   // Muy sutiles por defecto
+        side: THREE.DoubleSide,
+        wireframe: true 
+    });
+
+    for (let i = 0; i < panelCount; i++) {
+        // Alternamos entre Rectángulos y Triángulos
+        let panelShape;
+        if (i % 2 === 0) {
+            panelShape = new THREE.PlaneGeometry(2, 1.2); // Rectángulo tipo pantalla
+        } else {
+            panelShape = new THREE.CircleGeometry(1, 3); // Triángulo
+        }
+        
+        const panelMesh = new THREE.Mesh(panelShape, panelMaterial);
+
+        // Posicionamiento aleatorio alrededor de la esfera (entre radio 3 y 5)
+        const theta = Math.random() * Math.PI * 2; // Ángulo aleatorio
+        const radius = 3.5 + Math.random() * 2; // Distancia del centro
+        
+        panelMesh.position.x = Math.cos(theta) * radius;
+        panelMesh.position.y = (Math.random() - 0.5) * 4; // Altura variable
+        panelMesh.position.z = Math.sin(theta) * radius * 0.5; // Profundidad
+
+        // Rotación aleatoria inicial
+        panelMesh.rotation.set(Math.random(), Math.random(), Math.random());
+
+        scene.add(panelMesh);
+        // Guardamos referencia y posición inicial para animar
+        dataPanels.push({ mesh: panelMesh, initialY: panelMesh.position.y, speed: 0.002 + Math.random() * 0.002 });
+    }
+
     // --- Event Listener Mouse ---
     document.addEventListener('mousemove', (event) => {
+        // Actualizamos mouse para esfera y para raycaster
         mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
         mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
     });
@@ -75,16 +116,39 @@ const init3D = () => {
         requestAnimationFrame(animate);
         const time = clock.getElapsedTime();
 
-        // A. Movimiento Esfera (Interactivo)
+        // A. Movimiento Esfera 
         sphere.rotation.y += 0.001;
         sphere.rotation.z += 0.0005;
 
-        // B. Movimiento Partículas (Lógica Clásica: Rotación Simple)
-        // Esto hace que giren alrededor de la esfera en bloque, como te gustaba
+        // B. Movimiento Partículas (Rotación en bloque clásica)
         particlesMesh.rotation.y = -time * 0.05; 
-        particlesMesh.rotation.x = time * 0.01; // Un toque leve en X para dinamismo
+        particlesMesh.rotation.x = time * 0.01; 
 
-        // C. Interacción Mouse (Solo afecta a la esfera)
+        // C. Movimiento e Interacción de Paneles (NUEVO)
+        // Actualizamos el raycaster con la posición del mouse
+        raycaster.setFromCamera(mouse, camera);
+        const intersects = raycaster.intersectObjects(dataPanels.map(p => p.mesh));
+
+        dataPanels.forEach(panel => {
+            // 1. Animación flotante
+            panel.mesh.rotation.x += panel.speed;
+            panel.mesh.rotation.y += panel.speed;
+            panel.mesh.position.y = panel.initialY + Math.sin(time + panel.initialY) * 0.3;
+
+            // 2. Interacción (Hover)
+            // Si el mouse intersecta este panel...
+            if (intersects.some(hit => hit.object === panel.mesh)) {
+                panel.mesh.material.opacity = 0.4; // Se ilumina
+                panel.mesh.material.color.set(0x00ffff); // Cian puro
+                panel.mesh.scale.setScalar(1.1); // Crece un poquito
+            } else {
+                panel.mesh.material.opacity = 0.1; // Vuelve a ser fantasma
+                panel.mesh.material.color.set(0x00ffff); 
+                panel.mesh.scale.setScalar(1.0); // Tamaño normal
+            }
+        });
+
+        // D. Interacción Mouse Esfera (Deformación)
         const distToCenter = Math.sqrt(mouse.x * mouse.x + mouse.y * mouse.y);
         const maxDist = 0.5;
         if (distToCenter < maxDist) {
@@ -94,7 +158,7 @@ const init3D = () => {
         }
         currentIntensity += (targetIntensity - currentIntensity) * 0.03; 
 
-        // D. Deformación Vértices Esfera
+        // E. Deformación Vértices Esfera
         const positions = geometry.attributes.position.array;
         for (let i = 0; i < positions.length; i += 3) {
             const ox = originalPositions[i];
