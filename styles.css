@@ -1,3 +1,9 @@
+html {
+    scroll-behavior: smooth;
+    /* Esto evita que la barra de navegación tape el título al bajar */
+    scroll-padding-top: 80px; 
+}
+
 :root {
     --bg-dark: #000000; /* Negro puro */
     --card-bg: rgba(255, 255, 255, 0.03);

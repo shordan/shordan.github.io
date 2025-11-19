@@ -47,7 +47,7 @@ const init3D = () => {
     for(let i = 0; i < particlesCount * 3; i++) {
         // VOLVEMOS A LA DISPERSIÓN CORTA (Como en el primer código)
         // Antes era 90 (muy lejos), ahora es 25 (cerca de la esfera)
-        posArray[i] = (Math.random() - 0.5) * 25; 
+        posArray[i] = (Math.random() - 0.5) * 15; 
     }
 
     particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
