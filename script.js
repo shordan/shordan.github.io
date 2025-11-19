@@ -70,7 +70,7 @@ const init3D = () => {
     const panelMaterial = new THREE.MeshBasicMaterial({
         color: 0x00ffff, // Cian Tecnológico
         transparent: true,
-        opacity: 0.1,   // Muy sutiles por defecto
+        opacity: 0.6,   // Muy sutiles por defecto
         side: THREE.DoubleSide,
         wireframe: true 
     });
@@ -88,7 +88,7 @@ const init3D = () => {
 
         // Posicionamiento aleatorio alrededor de la esfera (entre radio 3 y 5)
         const theta = Math.random() * Math.PI * 2; // Ángulo aleatorio
-        const radius = 3.5 + Math.random() * 2; // Distancia del centro
+        const radius = 3.5 + Math.random() * 1.5; // Distancia del centro
         
         panelMesh.position.x = Math.cos(theta) * radius;
         panelMesh.position.y = (Math.random() - 0.5) * 4; // Altura variable
@@ -138,11 +138,11 @@ const init3D = () => {
             // 2. Interacción (Hover)
             // Si el mouse intersecta este panel...
             if (intersects.some(hit => hit.object === panel.mesh)) {
-                panel.mesh.material.opacity = 0.4; // Se ilumina
+                panel.mesh.material.opacity = 1; // Se ilumina
                 panel.mesh.material.color.set(0x00ffff); // Cian puro
                 panel.mesh.scale.setScalar(1.1); // Crece un poquito
             } else {
-                panel.mesh.material.opacity = 0.1; // Vuelve a ser fantasma
+                panel.mesh.material.opacity = 0.6; // Vuelve a ser fantasma
                 panel.mesh.material.color.set(0x00ffff); 
                 panel.mesh.scale.setScalar(1.0); // Tamaño normal
             }
