@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jordan Delgado | Ingénieur Robotique & Automatique</title>
+    <title>Jordan Delgado | Ingénieur en mécatronique et automatisme</title>
     
     <link rel="stylesheet" href="styles.css">
     
@@ -90,6 +90,24 @@
                     <h3>Manipulateur 3-Axes & Vision</h3>
                     <p>Contrôle par vision artificielle et "Hand Tracking".</p>
                     <span class="tag">Python</span> <span class="tag">OpenCV</span> <span class="tag">Arduino</span>
+                </div>
+            </div>
+
+            <div class="project-card" onclick="openModal('modal3')">
+                <div class="card-image" style="background-image: url('https://placehold.co/400x300/000000/00ffaa?text=Siemens+Automation');"></div>
+                <div class="card-info">
+                    <h3>Intégration Automatisation</h3>
+                    <p>Architecture industrielle sécurisée et haute disponibilité.</p>
+                    <span class="tag">PCS7</span> <span class="tag">SITOP</span> <span class="tag">Cybersec</span>
+                </div>
+            </div>
+
+            <div class="project-card" onclick="openModal('modal4')">
+                <div class="card-image" style="background-image: url('https://placehold.co/400x300/000000/ffaa00?text=IoT+Glove');"></div>
+                <div class="card-info">
+                    <h3>Gant IoT Traduction Signes</h3>
+                    <p>Système embarqué avec Deep Learning (TensorFlow).</p>
+                    <span class="tag">Raspberry Pi</span> <span class="tag">MQTT</span> <span class="tag">AI</span>
                 </div>
             </div>
 
@@ -213,6 +231,83 @@ if results.multi_hand_landmarks:
                         </a>
                     </div>
 
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal3" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('modal3')">&times;</span>
+            <h2>Démonstrateur d’Intégration d’Équipements</h2>
+            <p style="color: var(--accent-cyan); margin-bottom: 20px;">Projet Industriel SIEMENS (3 mois)</p>
+            
+            <div class="project-detail-grid">
+                <div class="detail-left">
+                    <h3>Description Technique</h3>
+                    <p style="color: #ccc; margin-bottom: 15px; line-height: 1.6;">
+                        Mise en œuvre d'une architecture complète d'automatisation industrielle axée sur la haute disponibilité et la cybersécurité.
+                        <br><br>
+                        <ul style="margin-left: 20px; color: #ccc;">
+                            <li><strong>Architecture :</strong> Intégration d'instrumentation, alimentation (SITOP) et réseaux industriels (SCALANCE).</li>
+                            <li><strong>Réseau & Sécurité :</strong> Implémentation de topologies MRP/PRP et segmentation via VLAN/DMZ et Pare-feu.</li>
+                            <li><strong>Contrôle :</strong> Boucle de contrôle de procédé (radar, vannes) sur PCS7 pour simuler un mélange.</li>
+                        </ul>
+                    </p>
+                    <div class="code-block">
+                        <pre><code>// Exemple Configuration SCL (Structured Control Language)
+IF "Sensor_Level_High" THEN
+    "Valve_Inlet" := FALSE; // Sécurité débordement
+    "Pump_Process" := TRUE;
+ELSE
+    // Régulation PID
+    "PID_Flow".Mode := 3; // Mode Automatique
+END_IF;</code></pre>
+                    </div>
+                </div>
+                <div class="detail-right">
+                    <h3>Architecture Système</h3>
+                    <img src="https://placehold.co/600x400/111/00ffaa?text=Architecture+SCADA" alt="Siemens Architecture" class="detail-img">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal4" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('modal4')">&times;</span>
+            <h2>Gant IoT de Traduction (Langue des Signes)</h2>
+            <p style="color: var(--accent-cyan); margin-bottom: 20px;">Projet IoT & Systèmes Embarqués (4 mois)</p>
+            
+            <div class="project-detail-grid">
+                <div class="detail-left">
+                    <h3>Description Technique</h3>
+                    <p style="color: #ccc; margin-bottom: 15px; line-height: 1.6;">
+                        Conception d'un dispositif portable capable de traduire les gestes de la main en texte/voix en temps réel.
+                        <br><br>
+                        <ul style="margin-left: 20px; color: #ccc;">
+                            <li><strong>Embarqué :</strong> Acquisition de signaux (capteurs flex, IMU) sur Raspberry Pi Pico (MicroPython).</li>
+                            <li><strong>IoT :</strong> Transmission WiFi via protocole MQTT vers un broker, orchestré par Node-RED.</li>
+                            <li><strong>IA :</strong> Entraînement d'un modèle Deep Learning (TensorFlow.js) pour la classification gestuelle.</li>
+                        </ul>
+                    </p>
+                    <div class="code-block">
+                        <pre><code># MicroPython: Lecture Capteurs & Envoi MQTT
+import mqtt_client, machine
+
+flex_sensor = machine.ADC(26)
+imu_data = read_imu()
+
+payload = {
+    "flex": flex_sensor.read_u16(),
+    "accel": imu_data['accel']
+}
+client.publish(topic="glove/data", msg=str(payload))</code></pre>
+                    </div>
+                </div>
+                <div class="detail-right">
+                    <h3>Prototype IoT</h3>
+                    <img src="https://placehold.co/600x400/111/ffaa00?text=Prototype+Gant+IoT" alt="IoT Glove Prototype" class="detail-img">
                 </div>
             </div>
         </div>
