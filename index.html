@@ -34,7 +34,7 @@
         <div id="canvas-container"></div> 
         <div class="hero-content">
             <h1 class="glitch" data-text="Jordan Delgado">Jordan Delgado</h1>
-            <h2>Ingénieur en Robotique & Automatique</h2>
+            <h2>Ingénieur en mécatronique et automatisme</h2>
             <p>À la recherche d’un stage de 5 mois dans le secteur industriel.</p>
             <div style="margin-top: 20px;">
                 <a href="#projects" class="btn-neon">Voir Projets</a>
@@ -121,6 +121,7 @@
             <p style="color: var(--accent-cyan); margin-bottom: 20px;">Projet de Recherche (3 mois)</p>
             
             <div class="project-detail-grid">
+                
                 <div class="detail-left">
                     <h3>Description Technique</h3>
                     <p style="color: #ccc; margin-bottom: 15px; line-height: 1.6;">
@@ -142,9 +143,19 @@ error = setpoint - current_state;
 output = PID_Controller(error, Kp, Ki, Kd);</code></pre>
                     </div>
                 </div>
+
                 <div class="detail-right">
-                    <h3>Résultats de Simulation</h3>
-                    <img src="https://placehold.co/600x400/111/00f3ff?text=Simulation+Matlab" alt="Simulink Graph" class="detail-img">
+
+                    <h3 style="margin-top: 30px; color: white;">Article de Recherche (Paper)</h3>
+                    
+                    <iframe src="docs/Report_Drone.pdf" class="pdf-viewer" title="Rapport Hexacoptère" style="height: 500px; width: 100%; border-radius: 8px; border: none;"></iframe>
+                    
+                    <div style="text-align: right; margin-top: 10px;">
+                        <a href="docs/Report_Drone.pdf" target="_blank" class="btn-neon" style="font-size: 0.7rem; padding: 8px 15px;">
+                            <i class="fas fa-external-link-alt"></i> Ouvrir PDF Plein Écran
+                        </a>
+                    </div>
+
                 </div>
             </div>
         </div>
