@@ -331,33 +331,42 @@
             
             <div class="project-detail-grid">
                 <div class="detail-left">
-                    <h3>Description Technique</h3>
+                    <h3>Description Technique Détaillée</h3>
                     <p style="color: #ccc; margin-bottom: 15px; line-height: 1.6;">
-                        Conception d'un dispositif portable capable de traduire les gestes de la main en texte/voix en temps réel.
+                        Conception et prototypage d'un système bio-mécatronique portable ("Wearable") capable de traduire la langue des signes en parole synthétisée en temps réel. Ce projet intègre toute la chaîne de valeur d'un objet connecté (IoT), de l'acquisition physique à l'intelligence artificielle.
                         <br><br>
                         <ul style="margin-left: 20px; color: #ccc;">
-                            <li><strong>Embarqué :</strong> Acquisition de signaux (capteurs flex, IMU) sur Raspberry Pi Pico (MicroPython).</li>
-                            <li><strong>IoT :</strong> Transmission WiFi via protocole MQTT vers un broker, orchestré par Node-RED.</li>
-                            <li><strong>IA :</strong> Entraînement d'un modèle Deep Learning (TensorFlow.js) pour la classification gestuelle.</li>
+                            <li style="margin-bottom: 10px;">
+                                <strong>Système Embarqué & Acquisition :</strong>
+                                Développement de l'architecture hardware autour d'un <em>Raspberry Pi Pico W</em>. Intégration de capteurs résistifs de flexion (Flex Sensors) pour mesurer la courbure des doigts et d'une centrale inertielle (IMU MPU6050) pour capter l'orientation et l'accélération de la main. Programmation bas niveau en <em>MicroPython</em> avec filtrage des signaux bruts.
+                            </li>
+                            <li style="margin-bottom: 10px;">
+                                <strong>Architecture IoT & Communication :</strong>
+                                Implémentation d'une stack IoT robuste. Les données télémétriques sont transmises sans fil via Wi-Fi en utilisant le protocole léger <em>MQTT</em>. Orchestration des flux de données via <em>Node-RED</em>, assurant la liaison entre le gant physique et le cloud de traitement.
+                            </li>
+                            <li style="margin-bottom: 10px;">
+                                <strong>Intelligence Artificielle (Edge/Web AI) :</strong>
+                                Collecte et étiquetage d'un dataset propriétaire de gestes. Conception, entraînement et déploiement d'un modèle de <em>Réseau de Neurones Profonds (Deep Learning)</em> optimisé avec TensorFlow.js. Le modèle classifie les combinaisons complexes de données (flexion + orientation) pour identifier les lettres et mots signés avec une haute précision.
+                            </li>
+                            <li>
+                                <strong>Interface Utilisateur (IHM) :</strong>
+                                Développement d'une application web interactive affichant la traduction en temps réel et intégrant une synthèse vocale (Text-to-Speech) pour donner une voix à l'utilisateur.
+                            </li>
                         </ul>
                     </p>
-                    <div class="code-block">
-                        <pre><code># MicroPython: Lecture Capteurs & Envoi MQTT
-import mqtt_client, machine
-
-flex_sensor = machine.ADC(26)
-imu_data = read_imu()
-
-payload = {
-    "flex": flex_sensor.read_u16(),
-    "accel": imu_data['accel']
-}
-client.publish(topic="glove/data", msg=str(payload))</code></pre>
-                    </div>
                 </div>
                 <div class="detail-right">
-                    <h3>Prototype IoT</h3>
-                    <img src="https://placehold.co/600x400/111/ffaa00?text=Prototype+Gant+IoT" alt="IoT Glove Prototype" class="detail-img">
+
+                    <h3 style="margin-top: 30px; color: white;">Article de Recherche (Paper)</h3>
+                    
+                    <iframe src="docs/Glove.pdf" class="pdf-viewer" title="Rapport Hexacoptère" style="height: 500px; width: 100%; border-radius: 8px; border: none;"></iframe>
+                    
+                    <div style="text-align: right; margin-top: 10px;">
+                        <a href="docs/Glove.pdf" target="_blank" class="btn-neon" style="font-size: 0.7rem; padding: 8px 15px;">
+                            <i class="fas fa-external-link-alt"></i> Ouvrir PDF Plein Écran
+                        </a>
+                    </div>
+
                 </div>
             </div>
         </div>
