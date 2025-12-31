@@ -123,25 +123,44 @@
             <div class="project-detail-grid">
                 
                 <div class="detail-left">
-                    <h3>Description Technique</h3>
-                    <p style="color: #ccc; margin-bottom: 15px; line-height: 1.6;">
-                        Ce projet visait à concevoir le système de contrôle complet pour un drone hexacoptère.
-                        <br><br>
-                        <ul style="margin-left: 20px; color: #ccc;">
-                            <li><strong>Modélisation :</strong> Approche Newton-Euler pour la dynamique 6-DOF (translation et rotation).</li>
-                            <li><strong>Contrôle :</strong> Implémentation d'une boucle fermée pour la stabilisation et le suivi de trajectoire.</li>
-                            <li><strong>Validation :</strong> Simulation de scénarios complexes (décollage, perturbations) et analyse des singularités.</li>
-                        </ul>
+                    <h3>Description Technique Détaillée</h3>
+                    <p style="color: #ccc; margin-bottom: 20px; line-height: 1.6;">
+                        Ce projet a consisté en le développement intégral (from scratch) d'un simulateur de vol haute fidélité pour un hexacoptère, intégrant la modélisation physique complexe et l'architecture de contrôle.
                     </p>
-                    <div class="code-block">
-                        <pre><code>% Dynamique Newton-Euler (Simplifiée)
-F_total = m * (acc_lin + cross(omega, v_lin));
-M_total = I * alpha + cross(omega, I * omega);
 
-% Boucle de Contrôle
-error = setpoint - current_state;
-output = PID_Controller(error, Kp, Ki, Kd);</code></pre>
-                    </div>
+                    <ul style="margin-left: 20px; color: #ccc; line-height: 1.8;">
+                        <li style="margin-bottom: 15px;">
+                            <strong>Modélisation Dynamique Avancée (12 États) :</strong>
+                            <br>
+                            Dérivation rigoureuse des équations du mouvement basée sur le formalisme de <em>Newton-Euler</em>.
+                            <ul>
+                                <li>Transformation entre le repère Terrestre (inertiel) et le repère Corps via les matrices de rotation (Angles d'Euler Z-Y-X).</li>
+                                <li>Modélisation de la matrice d'inertie (tenseur) et prise en compte des effets de couplage inertiel (termes de Coriolis).</li>
+                                <li>Intégration des <strong>effets gyroscopiques</strong> générés par la rotation rapide des six rotors ($\Gamma = \sum \vec{\nu} \times \vec{H}_i$).</li>
+                                <li>Calcul précis des couples aérodynamiques (Poussée/Traînée) basé sur la géométrie hexagonale et la matrice de mixage (Allocateur de contrôle).</li>
+                            </ul>
+                        </li>
+
+                        <li style="margin-bottom: 15px;">
+                            <strong>Architecture de Contrôle (GNC) :</strong>
+                            <br>
+                            Conception d'un système de contrôle en boucle fermée pour ce système sous-actionné (6-DOF, 4 entrées de commande).
+                            <ul>
+                                <li>Relation cinématique inverse reliant les vitesses angulaires du corps ($p,q,r$) aux dérivées des angles d'Euler ($\dot{\phi}, \dot{\theta}, \dot{\psi}$) via le Jacobien analytique.</li>
+                                <li>Stabilisation d'attitude (Roll, Pitch, Yaw) et maintien d'altitude via des correcteurs PID réglés pour compenser la dynamique non-linéaire.</li>
+                            </ul>
+                        </li>
+
+                        <li>
+                            <strong>Simulation et Analyse Critique :</strong>
+                            <br>
+                            Développement d'un banc d'essai numérique sous MATLAB.
+                            <ul>
+                                <li>Validation par scénarios de vol complexes : Décollage, vol stationnaire (Hover), suivi de trajectoire et réponse aux perturbations externes.</li>
+                                <li>Analyse mathématique des singularités de représentation (Verrouillage de Cardan / Gimbal Lock) inhérentes aux angles d'Euler.</li>
+                            </ul>
+                        </li>
+                    </ul>
                 </div>
 
                 <div class="detail-right">
@@ -169,30 +188,31 @@ output = PID_Controller(error, Kp, Ki, Kd);</code></pre>
             
             <div class="project-detail-grid">
                 <div class="detail-left">
-                    <h3>Description Technique</h3>
+                    <h3>Description Technique Détaillée</h3>
                     <p style="color: #ccc; margin-bottom: 15px; line-height: 1.6;">
-                        Conception et assemblage d'un robot cylindrique intégrant la vision par ordinateur pour un pilotage intuitif.
+                        Développement mécatronique intégral ("from scratch") d'un manipulateur robotique cylindrique à 3 degrés de liberté. Ce projet combine une conception mécanique robuste, une électronique embarquée sur mesure et une couche logicielle avancée pour le contrôle par vision.
                         <br><br>
                         <ul style="margin-left: 20px; color: #ccc;">
-                            <li><strong>Mécanique :</strong> Conception mécanique et modélisation cinématique complète.</li>
-                            <li><strong>Interface :</strong> GUI Matlab pour le contrôle de position et communication série avec Arduino.</li>
-                            <li><strong>Vision IA :</strong> Système de "Hand Tracking" (suivi de la main) pour contrôler le gripper en temps réel.</li>
+                            <li style="margin-bottom: 10px;">
+                                <strong>Conception Mécanique & CAO (SolidWorks) :</strong>
+                                Modélisation complète de la structure et optimisation pour l'impression 3D. Conception sur mesure d'un <em>réducteur mécanique</em> (boîte de vitesses) à la base pour démultiplier le couple et supporter une charge utile élevée. Intégration de systèmes de transmission par courroies/poulies et roulements à billes pour assurer fluidité et précision des mouvements.
+                            </li>
+                            <li style="margin-bottom: 10px;">
+                                <strong>Électronique & Contrôle Bas Niveau :</strong>
+                                Architecture centrée sur Arduino interfacée avec des drivers de puissance pour le pilotage précis des moteurs pas à pas et servomoteurs. Gestion matérielle des signaux de commande et de l'alimentation.
+                            </li>
+                            <li style="margin-bottom: 10px;">
+                                <strong>Algorithmique & Interface (Matlab) :</strong>
+                                Développement d'une GUI complète sous Matlab intégrant le calcul cinématique (modèles géométriques direct et inverse) et gestion de la communication Série (UART) en temps réel avec le microcontrôleur.
+                            </li>
+                            <li>
+                                <strong>Vision par Ordinateur & IA :</strong>
+                                Développement d'un pipeline de vision en Python (OpenCV) pour le <em>Hand Tracking</em>. Le système détecte les gestes de la main et asservit la position du robot et l'ouverture du gripper (pince) pour réaliser des opérations de <em>Pick & Place</em> intuitives sans contact physique.
+                            </li>
                         </ul>
                     </p>
-                    <div class="code-block">
-                        <pre><code>import cv2
-import mediapipe as mp
-
-# Logique de Hand Tracking
-if results.multi_hand_landmarks:
-    for hand_landmarks in results.multi_hand_landmarks:
-        # Calcul de la distance entre le pouce et l'index
-        length = calculate_distance(thumb_tip, index_tip)
-        
-        if length < 30:
-            arduino.write(b'GRIP_CLOSE') # Fermer la pince</code></pre>
-                    </div>
                 </div>
+                    
 
                 <div class="detail-right">
                     
@@ -257,29 +277,48 @@ if results.multi_hand_landmarks:
                 <div class="detail-left">
                     <h3>Description Technique</h3>
                     <p style="color: #ccc; margin-bottom: 15px; line-height: 1.6;">
-                        Mise en œuvre d'une architecture complète d'automatisation industrielle axée sur la haute disponibilité et la cybersécurité.
+                        Conception et développement d'une unité de démonstration modulaire ("Nouvelle Demo PA") simulant un processus industriel réel de contrôle de densité et de réduction de concentration de soude caustique. Ce projet vise à remplacer l'ancienne demo "Mind Room" en intégrant l'ensemble du portfolio Process Automation de Siemens.
+                        <br><br>
+                        L'architecture repose sur une boucle de régulation fermée pilotée par un DCS avancé, intégrant un jumeau numérique pour la simulation et la validation, ainsi qu'une connectivité industrielle de pointe pour le télécontrôle.
                         <br><br>
                         <ul style="margin-left: 20px; color: #ccc;">
-                            <li><strong>Architecture :</strong> Intégration d'instrumentation, alimentation (SITOP) et réseaux industriels (SCALANCE).</li>
-                            <li><strong>Réseau & Sécurité :</strong> Implémentation de topologies MRP/PRP et segmentation via VLAN/DMZ et Pare-feu.</li>
-                            <li><strong>Contrôle :</strong> Boucle de contrôle de procédé (radar, vannes) sur PCS7 pour simuler un mélange.</li>
+                            <li>
+                                <strong>Contrôle de Procédé & Instrumentation de Terrain :</strong> 
+                                Mise en œuvre d'une boucle de mélange (Eau/Soude) avec contrôle PID de la densité via le débitmètre Coriolis <em>SITRANS FC430</em>. Instrumentation complète incluant capteurs de pression <em>SITRANS P320</em>, radars de niveau <em>SITRANS LR110</em>, pesage <em>SIWAREX WL270</em> et vannes de contrôle régulées par positionneurs <em>SIPART PS2</em>.
+                            </li>
+                            <br>
+                            <li>
+                                <strong>Architecture de Contrôle Distribué (DCS) :</strong> 
+                                Cerveau du système basé sur le contrôleur haute disponibilité <em>CPU AS410</em> (SIMATIC S7-410). Déploiement flexible sur <em>PCS 7</em> ou <em>PCS neo</em> (Web-based) avec ingénierie "Late Binding". Intégration de la plateforme de simulation <em>SIMIT</em> pour créer un jumeau numérique (Digital Twin) permettant la validation virtuelle des stratégies de contrôle.
+                            </li>
+                            <br>
+                            <li>
+                                <strong>Réseau Industriel & Cybersécurité :</strong> 
+                                Infrastructure de communication PROFINET gérée par switches <em>SCALANCE XC206</em> (Cuivre et Fibre Optique). Intégration de solutions de télécontrôle et d'accès distant sécurisé (VPN/Firewall) via routeurs industriels <em>SCALANCE M874-3</em> et unités <em>RTU 3000C</em> pour le monitoring via réseaux mobiles (LTE/4G).
+                            </li>
+                            <br>
+                            <li>
+                                <strong>Gestion Énergétique & Mécanique :</strong> 
+                                Alimentation intelligente via <em>SITOP PSU8600</em> pour l'optimisation énergétique et le diagnostic réseau intégré. Construction mécanique robuste avec tuyauterie en Acier Inoxydable AISI 316L pour la résistance à la corrosion chimique.
+                            </li>
                         </ul>
                     </p>
-                    <div class="code-block">
-                        <pre><code>// Exemple Configuration SCL (Structured Control Language)
-IF "Sensor_Level_High" THEN
-    "Valve_Inlet" := FALSE; // Sécurité débordement
-    "Pump_Process" := TRUE;
-ELSE
-    // Régulation PID
-    "PID_Flow".Mode := 3; // Mode Automatique
-END_IF;</code></pre>
-                    </div>
                 </div>
+
                 <div class="detail-right">
-                    <h3>Architecture Système</h3>
-                    <img src="https://placehold.co/600x400/111/00ffaa?text=Architecture+SCADA" alt="Siemens Architecture" class="detail-img">
+
+                    <h3 style="margin-top: 30px; color: white;">Article de Recherche (Paper)</h3>
+                    
+                    <iframe src="docs/SIEMENS_DEMO_PA.pdf" class="pdf-viewer" title="Rapport Hexacoptère" style="height: 500px; width: 100%; border-radius: 8px; border: none;"></iframe>
+                    
+                    <div style="text-align: right; margin-top: 10px;">
+                        <a href="docs/SIEMENS_DEMO_PA.pdf" target="_blank" class="btn-neon" style="font-size: 0.7rem; padding: 8px 15px;">
+                            <i class="fas fa-external-link-alt"></i> Ouvrir PDF Plein Écran
+                        </a>
+                    </div>
+
                 </div>
+                
             </div>
         </div>
     </div>
